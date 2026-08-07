@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electrical Engineering Portfolio</title>
-
-    <link rel="icon" type="image/png" href="ph logo.png">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -43,7 +40,6 @@
             overflow-x: hidden;
         }
 
-        /* Fixed background image with warm overlay so text stays readable */
         body::before {
             content: "";
             position: fixed;
@@ -57,7 +53,6 @@
             z-index: -2;
         }
 
-        /* Subtle warm vignette + grain-like glow for depth */
         body::after {
             content: "";
             position: fixed;
@@ -76,14 +71,12 @@
             font-family: 'Space Grotesk', 'Inter', sans-serif;
         }
 
-        /* ---------- Header ---------- */
         header {
             position: relative;
             padding-bottom: 2.5rem;
             margin-bottom: 3rem;
         }
 
-        /* Animated glowing horizon line, echoing the elevated highways in the skyline */
         header::after {
             content: "";
             position: absolute;
@@ -164,7 +157,6 @@
             transform: translateY(-2px);
         }
 
-        /* ---------- Sections: scroll-reveal ---------- */
         section {
             margin-bottom: 3rem;
             opacity: 0;
@@ -187,7 +179,6 @@
             letter-spacing: 0.01em;
         }
 
-        /* ---------- Cards ---------- */
         .skills-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -270,7 +261,6 @@
             font-size: 0.9rem;
         }
 
-        /* Respect users who prefer reduced motion */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -378,7 +368,7 @@
                     • Installed specialized safety and low-voltage infrastructure, including CCTV and fire-fighting systems.
                 </p>
 
-                <!-- Place the button link here -->
+                <!-- Added Google Drive Button Here -->
                 <div style="margin-top: 1rem;">
                     <a href="https://drive.google.com/drive/folders/1jRVgnTwe4oBzhM4AXFsTUW9eRj5opsep?usp=sharing" target="_blank">
                         📁 View Field Work & Documentation
@@ -394,7 +384,6 @@
     </div>
 
     <script>
-        // Scroll-reveal: sections fade + rise into view as the user scrolls
         const sections = document.querySelectorAll('section');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
