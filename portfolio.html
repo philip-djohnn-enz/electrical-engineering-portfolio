@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electrical Engineering Portfolio</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --border: #30363d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .bio {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-links a {
+            display: inline-block;
+            background-color: #21262d;
+            color: var(--accent);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-right: 0.5rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-links a:hover {
+            background-color: #30363d;
+        }
+
+        section {
+            margin-bottom: 2.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .skill-card, .project-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.25rem;
+        }
+
+        .skill-card h3, .project-card h3 {
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .skill-card p, .project-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .project-card .tech-stack {
+            display: inline-block;
+            background: #1f6feb33;
+            color: var(--accent);
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.75rem;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header Section -->
+        <header>
+            <h1>CHORN Philip</h1>
+            <div class="tagline">Electrical Engineering Student & Hardware/Automation Developer</div>
+            <p class="bio">Dedicated engineering student in the ECAM LaSalle international program at the Institute of Technology of Cambodia (ITC) specializing in Robotics and Automation. Bringing practical background in MEP systems, circuit troubleshooting, microcontroller firmware, and smart automation concepts.</p>
+            <div class="btn-links">
+                <a href="CHORN_PHILIP_CV.pdf" target="_blank" class="btn-cv">📄 Download Full CV</a>
+    
+    <a href="mailto:Chornphilip8@gmail.com">Email Me</a>
+                <a href="https://github.com/philip-djohnn-enz" target="_blank">GitHub Profile</a>
+                <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+            </div>
+        </header>
+
+        <!-- Technical Skills Section -->
+        <section>
+            <h2>Technical Expertise</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>Hardware & Circuit Design</h3>
+                    <p>Schematic capture, PCB layout design, component selection, multimeter/oscilloscope testing, and circuit protection systems (RCCBs/MCBs).</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Embedded & Automation</h3>
+                    <p>Microcontroller programming (STM32, ESP32), sensor interfacing, motor driver integrations, and PID control algorithm implementation.</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Tools & Software</h3>
+                    <p>Altium Designer, KiCad, LTspice, MATLAB/Simulink, AutoCAD, and Git version control.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Projects Section -->
+        <section>
+            <h2>Featured Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+    <h3>🏆 Line Follower Robot (Champion - 1st Place)</h3>
+    <p>Designed and built an autonomous path-finding robot utilizing infrared sensors and custom microcontroller programming. Competed and achieved 1st Place in the 2026 Robotics Competition.</p>
+    
+    <!-- Google Drive Video Button -->
+    <div style="margin-top: 1rem;">
+        <a href="https://drive.google.com/file/d/1B2VWKIvQDtsRpXMqE3kuY9nmrkv3K5X7/view?usp=sharing" target="_blank" style="display: inline-block; background-color: #21262d; color: #58a6ff; border: 1px solid #30363d; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 500;">
+            ▶ Watch Robot Demo (Google Drive)
+        </a>
+    </div>
+
+    <br>
+    <span class="tech-stack">Embedded Systems | Robotics Assembly | Sensor Integration</span>
+</div>
+               <div class="project-card">
+    <h3>Residual Current Circuit Breaker (RCCB) Analysis</h3>
+    <p>Conducted detailed academic research and technical system evaluations on differential current sensing, fault detection speeds, and electrical safety standards for commercial distribution units.</p>
+    
+    <!-- Facebook Video Button -->
+    <div style="margin-top: 1rem;">
+        <a href="https://www.facebook.com/share/v/1bsX4uAJKE/" target="_blank" style="display: inline-block; background-color: #21262d; color: #58a6ff; border: 1px solid #30363d; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 500;">
+            ▶ Watch Presentation Video (Facebook)
+        </a>
+    </div>
+
+    <br>
+    <span class="tech-stack" style="margin-top: 0.75rem; display: inline-block;">Power Systems | Circuit Protection | Technical Documentation</span>
+</div>
+            </div>
+        </section>
+        <!-- Experience Section -->
+        <section>
+            <h2>Professional Experience</h2>
+            
+            <div class="experience-card">
+                <h3>MEP Draftsman & Technical Coordinator – B&MEP Engineering Construction Co., Ltd</h3>
+                <p><em>August 2025 – Present</em>[cite: 2]</p>
+                <p style="margin-top: 0.5rem;">
+                    • Managed MEP drafting for 5+ major commercial projects (banks and dental clinics), producing precise CAD layout plans.<br>
+                    • Performed electrical load calculations and generated Bill of Quantities (BOQ) files.<br>
+                    • Provided direct technical support and troubleshooting for active installation crews.
+                </p>
+                
+                <!-- Link to Work Folder Button -->
+                <div style="margin-top: 1rem;">
+                    <a href="https://drive.google.com/drive/folders/1Iauf2hc7H5q5cCbdn31uX2edqLvJHxO3?usp=drive_link" target="_blank" style="display: inline-block; background-color: #21262d; color: #58a6ff; border: 1px solid #30363d; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 500;">
+                        📁 View CAD Drawings & Project Folder
+                    </a>
+                </div>
+            </div>
+
+            <div class="experience-card">
+                <h3>MEP Technician – B&MEP Engineering Construction Co., Ltd</h3>
+                <p><em>Hands-on Field Experience</em></p>
+                <p style="margin-top: 0.5rem;">
+                    • Executed full installations and testing for HVAC, lighting, and plumbing systems[cite: 2].<br>
+                    • Installed specialized safety and low-voltage infrastructure, including CCTV and fire-fighting systems.
+                </p>
+            </div>
+        </section>
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2026 CHORN Philip. Built with HTML & CSS on GitHub Pages.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
