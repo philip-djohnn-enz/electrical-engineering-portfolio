@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Philip's Portfolio</title>
+    <title>Electrical Engineering Portfolio</title>
 
     <link rel="icon" type="image/png" href="ph logo.png">
 
@@ -256,6 +256,47 @@
             margin-bottom: 1.25rem;
         }
 
+        /* =====================================================
+           PROJECT BADGES — small hex-framed line-art icons that
+           hover in the corner of each featured project card and
+           echo what that project is about (line-follower robot,
+           RCBO breaker, ultrasonic radar), replacing the old
+           photo thumbnails. position:absolute + pointer-events:none
+           means they sit on top of the card without shifting layout.
+           ===================================================== */
+        .project-icon {
+            position: absolute;
+            top: -18px;
+            right: -18px;
+            width: 64px;
+            height: 64px;
+            pointer-events: none;
+            opacity: 0.92;
+            filter: drop-shadow(0 0 10px rgba(255, 140, 66, 0.35));
+            animation: cardIconFloat 7s ease-in-out infinite;
+            z-index: 3;
+        }
+
+        .project-icon svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        @keyframes cardIconFloat {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50%      { transform: translateY(-12px) rotate(3deg); }
+        }
+
+        @media (max-width: 720px) {
+            .project-icon { width: 46px; height: 46px; top: -12px; right: -10px; }
+        }
+
+        @media (max-width: 480px) {
+            .project-icon { display: none; }
+        }
+
         .project-card .tech-stack {
             display: inline-block;
             background: rgba(255, 140, 66, 0.14);
@@ -296,48 +337,6 @@
         }
 
         /* =====================================================
-           FLOATING PROJECT BADGES — small hex-framed line-art
-           icons that hover in the corner of each featured
-           project card and echo what that project is about
-           (line-follower robot, RCBO breaker, ultrasonic radar).
-           position:absolute + pointer-events:none means they sit
-           on top of their card without shifting any layout or
-           affecting the rest of the page.
-           ===================================================== */
-        .float-icon {
-            position: absolute;
-            top: -18px;
-            right: -18px;
-            width: 64px;
-            height: 64px;
-            pointer-events: none;
-            opacity: 0.92;
-            filter: drop-shadow(0 0 10px rgba(255, 140, 66, 0.35));
-            animation: floatDrift 7s ease-in-out infinite;
-            z-index: 3;
-        }
-
-        .float-icon svg {
-            display: block;
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-        }
-
-        @keyframes floatDrift {
-            0%, 100% { transform: translateY(0) rotate(-3deg); }
-            50%      { transform: translateY(-12px) rotate(3deg); }
-        }
-
-        @media (max-width: 720px) {
-            .float-icon { width: 46px; height: 46px; top: -12px; right: -10px; }
-        }
-
-        @media (max-width: 480px) {
-            .float-icon { display: none; }
-        }
-
-        /* =====================================================
            AMBIENT DECORATION — concentric ring watermark behind
            the header, drifting embers across the whole page, and
            twinkling sparkle accents through the sections. Inspired
@@ -371,6 +370,51 @@
             z-index: 1;
             pointer-events: none;
             overflow: hidden;
+        }
+
+        /* ---------- Randomly floating tech icons ---------- */
+        .floating-elements {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .float-icon {
+            position: absolute;
+            opacity: 0;
+            color: var(--amber);
+            filter: drop-shadow(0 0 6px rgba(255, 140, 66, 0.35));
+            animation-name: floatDrift, floatFade;
+            animation-timing-function: ease-in-out, ease-in-out;
+            animation-iteration-count: infinite, infinite;
+            will-change: transform, opacity;
+        }
+
+        .float-icon svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        @keyframes floatDrift {
+            0%   { transform: translate(0, 0) rotate(0deg); }
+            25%  { transform: translate(var(--fx1), var(--fy1)) rotate(var(--fr1)); }
+            50%  { transform: translate(var(--fx2), var(--fy2)) rotate(var(--fr2)); }
+            75%  { transform: translate(var(--fx3), var(--fy3)) rotate(var(--fr3)); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        @keyframes floatFade {
+            0%, 100% { opacity: 0; }
+            10%      { opacity: var(--fop); }
+            50%      { opacity: calc(var(--fop) * 0.6); }
+            90%      { opacity: var(--fop); }
+        }
+
+        @media (max-width: 600px) {
+            .float-icon { transform: scale(0.85); }
         }
 
         .ember {
@@ -627,8 +671,9 @@
             section { opacity: 1; transform: none; }
             #intro { display: none !important; }
             .ambient-embers { display: none !important; }
+            .floating-elements { display: none !important; }
             .ring-field, .sparkle, .sparkle-dot { opacity: 0.1 !important; }
-            .float-icon { opacity: 0.6 !important; transform: none !important; }
+            .project-icon { opacity: 0.6 !important; transform: none !important; animation: none !important; }
             .container header .brand-logo,
             .container header h1,
             .container header .tagline,
@@ -667,7 +712,7 @@
 
         <div class="intro-text">
             <h1>CHORN PHILIP <span class="khmer">ចន ហ្វីលីប</span></h1>
-            <p class="intro-tagline">Electrical Engineering Student &amp; Automation Developer</p>
+            <p class="intro-tagline">Electrical Engineering Student &amp; Hardware/Automation Developer</p>
         </div>
 
         <p class="intro-hint">Tap anywhere to enter</p>
@@ -675,6 +720,9 @@
 
     <!-- Ambient drifting embers, populated by script below -->
     <div class="ambient-embers" id="ambientEmbers" aria-hidden="true"></div>
+
+    <!-- Randomly placed floating tech icons, populated by script below -->
+    <div class="floating-elements" id="floatingElements" aria-hidden="true"></div>
 
     <div class="container">
         <header>
@@ -694,7 +742,7 @@
 
             <img src="ph logo.png" alt="PH logo" class="brand-logo">
             <h1>CHORN PHILIP <span class="khmer">ចន ហ្វីលីប</span></h1>
-            <div class="tagline">Electrical Engineering Student & Automation Developer</div>
+            <div class="tagline">Electrical Engineering Student & Hardware/Automation Developer</div>
             <p class="bio">Dedicated engineering student in the ECAM LaSalle international program at the Institute of Technology of Cambodia (ITC) specializing in Robotics and Automation. Bringing practical background in MEP systems, circuit troubleshooting, microcontroller firmware, and smart automation concepts.</p>
             <div class="btn-links">
                 <a href="CHORN_PHILIP_CV.pdf" target="_blank" class="btn-cv">📄 Download Full CV</a>
@@ -738,7 +786,7 @@
             <h2>Featured Projects</h2>
             <div class="projects-grid">
                 <div class="project-card">
-                    <span class="float-icon" aria-hidden="true" style="animation-delay:0s;">
+                    <span class="project-icon" aria-hidden="true" style="animation-delay:0s;">
                         <svg viewBox="0 0 100 100">
                             <defs>
                                 <linearGradient id="gradRobot" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -759,7 +807,7 @@
                     <p>Designed and built an autonomous path-finding robot utilizing infrared sensors and custom microcontroller programming. Competed and achieved 1st Place in the 2026 Robotics Competition.</p>
 
                     <div style="margin-top: 1rem;">
-                        <a href="https://drive.google.com/drive/folders/1AfE8Use7veXtqmIMWOBtyBM0xQOPRKwj?usp=sharing" target="_blank">
+                        <a href="https://drive.google.com/file/d/1B2VWKIvQDtsRpXMqE3kuY9nmrkv3K5X7/view?usp=sharing" target="_blank">
                             ▶ Watch Robot Demo (Google Drive)
                         </a>
                     </div>
@@ -768,7 +816,7 @@
                     <span class="tech-stack">Embedded Systems | Robotics Assembly | Sensor Integration</span>
                 </div>
                 <div class="project-card">
-                    <span class="float-icon" aria-hidden="true" style="animation-delay:1.4s;">
+                    <span class="project-icon" aria-hidden="true" style="animation-delay:1.4s;">
                         <svg viewBox="0 0 100 100">
                             <defs>
                                 <linearGradient id="gradBreaker" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -796,7 +844,7 @@
                     <span class="tech-stack" style="margin-top: 0.75rem; display: inline-block;">Power Systems | Circuit Protection | Technical Documentation</span>
                 </div>
                 <div class="project-card">
-                <span class="float-icon" aria-hidden="true" style="animation-delay:2.8s;">
+                <span class="project-icon" aria-hidden="true" style="animation-delay:2.8s;">
                     <svg viewBox="0 0 100 100">
                         <defs>
                             <linearGradient id="gradRadar" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -950,6 +998,66 @@
                 ember.style.animationDelay = delay + 's';
                 ember.style.setProperty('--drift', drift + 'px');
                 layer.appendChild(ember);
+            }
+        })();
+
+        // ---------------- Randomly floating tech icons ----------------
+        (function () {
+            if (prefersReduced) return;
+            const layer = document.getElementById('floatingElements');
+            if (!layer) return;
+
+            // A small set of simple line-art icons matching the amber/electrical theme
+            const ICONS = [
+                // bolt
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M13 2 L4 14 h6 l-1 8 9-12 h-6 z"/></svg>',
+                // gear
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>',
+                // chip
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M9 2v3M12 2v3M15 2v3M9 19v3M12 19v3M15 19v3M2 9h3M2 12h3M2 15h3M19 9h3M19 12h3M19 15h3"/></svg>',
+                // resistor / circuit trace
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M1 12h4l1.5-4 3 8 3-8 3 8 1.5-4h4"/></svg>',
+                // hex nut / node ring
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.3" fill="currentColor" stroke="none"/></svg>'
+            ];
+
+            const COUNT = 12;
+            for (let i = 0; i < COUNT; i++) {
+                const el = document.createElement('span');
+                el.className = 'float-icon';
+                el.innerHTML = ICONS[Math.floor(Math.random() * ICONS.length)];
+
+                const size = (16 + Math.random() * 22).toFixed(0); // 16–38px
+                const top = (Math.random() * 96).toFixed(1);
+                const left = (Math.random() * 96).toFixed(1);
+                const duration = (14 + Math.random() * 16).toFixed(1); // 14–30s drift
+                const fadeDuration = (5 + Math.random() * 5).toFixed(1);
+                const delay = (-Math.random() * duration).toFixed(1);
+                const fadeDelay = (-Math.random() * fadeDuration).toFixed(1);
+                const opacity = (0.15 + Math.random() * 0.3).toFixed(2);
+
+                // Randomized waypoints so each icon drifts on its own gentle, irregular path
+                const rand = (r) => (Math.random() * r * 2 - r).toFixed(0);
+                const randDeg = () => (Math.random() * 30 - 15).toFixed(0);
+
+                el.style.width = size + 'px';
+                el.style.height = size + 'px';
+                el.style.top = top + 'vh';
+                el.style.left = left + 'vw';
+                el.style.animationDuration = duration + 's, ' + fadeDuration + 's';
+                el.style.animationDelay = delay + 's, ' + fadeDelay + 's';
+                el.style.setProperty('--fop', opacity);
+                el.style.setProperty('--fx1', rand(30) + 'px');
+                el.style.setProperty('--fy1', rand(30) + 'px');
+                el.style.setProperty('--fx2', rand(40) + 'px');
+                el.style.setProperty('--fy2', rand(40) + 'px');
+                el.style.setProperty('--fx3', rand(25) + 'px');
+                el.style.setProperty('--fy3', rand(25) + 'px');
+                el.style.setProperty('--fr1', randDeg() + 'deg');
+                el.style.setProperty('--fr2', randDeg() + 'deg');
+                el.style.setProperty('--fr3', randDeg() + 'deg');
+
+                layer.appendChild(el);
             }
         })();
     </script>
