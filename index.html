@@ -3,33 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Philip's 3D Portfolio — Electrical & Automation</title>
+    <title>CHORN Philip — 3D IoT & Automation Engineer</title>
 
     <link rel="icon" type="image/png" href="ph logo.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Koulen&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Koulen&display=swap" rel="stylesheet">
 
-    <!-- Three.js + GSAP for 3D & Smooth Motion -->
+    <!-- Three.js + GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <style>
         :root {
-            --bg-dark: #080504;
-            --glass: rgba(18, 13, 10, 0.68);
-            --glass-card: rgba(24, 16, 12, 0.72);
+            --bg-dark: #070403;
+            --bg-panel: rgba(18, 12, 9, 0.78);
+            --bg-card: rgba(26, 17, 12, 0.75);
             --glass-border: rgba(255, 170, 90, 0.22);
+            --glass-border-glow: rgba(255, 170, 90, 0.6);
             --text-main: #f5ebe0;
-            --text-muted: #cbb296;
-            --amber: #ffab5e;
-            --amber-bright: #ffc285;
-            --amber-deep: #ff7a3d;
-            --amber-dim: rgba(255, 140, 66, 0.4);
-            --glow-amber: 0 0 25px rgba(255, 140, 66, 0.45);
+            --text-muted: #c4aa8f;
+            --amber: #ffaa5a;
+            --amber-bright: #ffc48a;
+            --amber-deep: #ff7536;
+            --cyan-accent: #00f0ff;
+            --green-active: #00ff88;
+            --amber-glow: 0 0 25px rgba(255, 140, 66, 0.45);
         }
 
         * {
@@ -41,7 +42,6 @@
         html {
             scroll-behavior: smooth;
             -webkit-text-size-adjust: 100%;
-            text-size-adjust: 100%;
         }
 
         body {
@@ -49,10 +49,9 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             line-height: 1.6;
-            padding: 2rem 1rem 4rem;
+            padding: 0 1rem 4rem;
             position: relative;
             overflow-x: hidden;
-            perspective: 1200px;
         }
 
         body:not(.loaded) {
@@ -60,7 +59,7 @@
             height: 100vh;
         }
 
-        /* 3D WebGL Background Canvas */
+        /* 3D Background Canvas */
         #webgl-bg {
             position: fixed;
             top: 0;
@@ -71,26 +70,42 @@
             pointer-events: none;
         }
 
-        /* Subtle Dark Cyber Vignette */
+        /* Ambient Cyber Grid Overlay */
         body::before {
             content: "";
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 50% 30%, rgba(255, 140, 66, 0.04) 0%, rgba(8, 5, 4, 0.88) 75%, #050302 100%);
+            background-image: 
+                linear-gradient(rgba(255, 170, 90, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 170, 90, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Radial Vignette */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 30%, transparent 20%, rgba(7, 4, 3, 0.85) 80%, #050302 100%);
             z-index: 1;
             pointer-events: none;
         }
 
         .container {
-            max-width: 940px;
+            max-width: 980px;
             margin: 0 auto;
             position: relative;
             z-index: 2;
-            transform-style: preserve-3d;
         }
 
-        h1, h2, h3 {
+        h1, h2, h3, .tech-font {
             font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .khmer {
@@ -98,189 +113,225 @@
             font-weight: normal;
         }
 
+        /* ================= TOP IOT TELEMETRY BAR ================= */
+        .iot-topbar {
+            position: sticky;
+            top: 1rem;
+            z-index: 50;
+            margin-bottom: 2rem;
+            background: rgba(14, 9, 6, 0.82);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 0.6rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .iot-metrics {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .iot-node {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--amber);
+        }
+
+        .status-beacon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green-active);
+            box-shadow: 0 0 10px var(--green-active);
+            animation: pulseBeacon 1.8s infinite;
+        }
+
+        @keyframes pulseBeacon {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.5; }
+        }
+
+        .audio-toggle-btn {
+            background: rgba(255, 170, 90, 0.1);
+            border: 1px solid var(--glass-border);
+            color: var(--amber);
+            font-size: 0.75rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+
+        .audio-toggle-btn:hover {
+            background: var(--amber);
+            color: #000;
+        }
+
         /* ================= Header ================= */
         header {
             position: relative;
-            padding-bottom: 2.5rem;
+            padding: 2rem;
+            background: var(--bg-panel);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
             margin-bottom: 3.5rem;
-            transform-style: preserve-3d;
+            backdrop-filter: blur(14px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
 
         header::after {
             content: "";
             position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--amber-deep) 20%, var(--amber) 50%, var(--amber-deep) 80%, transparent);
-            background-size: 200% 100%;
-            animation: horizonGlow 5s ease-in-out infinite;
-            box-shadow: 0 0 12px rgba(255, 140, 66, 0.6);
+            left: 5%;
+            right: 5%;
+            bottom: -1px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--amber-deep) 30%, var(--amber) 50%, var(--amber-deep) 70%, transparent);
+            box-shadow: 0 0 15px var(--amber);
         }
 
-        @keyframes horizonGlow {
-            0%, 100% { background-position: 0% 0%; opacity: 0.6; }
-            50% { background-position: 100% 0%; opacity: 1; }
-        }
-
-        .header-grid {
+        .header-layout {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 2.2rem;
             flex-wrap: wrap;
         }
 
-        .brand-logo-container {
+        .brand-logo-frame {
             position: relative;
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             flex-shrink: 0;
-            transform-style: preserve-3d;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .brand-logo-container:hover {
-            transform: scale(1.1) rotateZ(5deg);
+        .brand-logo-frame::before {
+            content: "";
+            position: absolute;
+            inset: -4px;
+            border-radius: 16px;
+            background: linear-gradient(45deg, var(--amber-deep), transparent, var(--amber));
+            opacity: 0.5;
+            animation: spinBorder 8s linear infinite;
+        }
+
+        @keyframes spinBorder {
+            to { transform: rotate(360deg); }
         }
 
         .brand-logo {
             width: 100%;
             height: auto;
             border-radius: 12px;
-            display: block;
-            filter: drop-shadow(0 0 15px rgba(255, 140, 66, 0.45));
-            animation: riseIn 0.7s ease-out forwards;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 0 15px rgba(255, 140, 66, 0.6));
         }
 
-        .header-content {
+        .header-main {
             flex: 1;
             min-width: 280px;
         }
 
         h1 {
-            font-size: clamp(2.2rem, 5vw, 3rem);
+            font-size: clamp(2.2rem, 5vw, 3.2rem);
             font-weight: 800;
             color: #ffffff;
-            margin-bottom: 0.4rem;
             letter-spacing: -0.02em;
             background: linear-gradient(135deg, #ffffff 40%, var(--amber-bright) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            opacity: 0;
-            transform: translateY(14px);
-            animation: riseIn 0.7s ease-out 0.05s forwards;
+            margin-bottom: 0.3rem;
         }
 
-        .tagline {
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: var(--amber);
+        .header-tags {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
             margin-bottom: 1.2rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-shadow: 0 0 15px rgba(255, 140, 66, 0.35);
-            opacity: 0;
-            transform: translateY(14px);
-            animation: riseIn 0.7s ease-out 0.12s forwards;
         }
 
-        .tagline::before {
-            content: "";
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #00ff88;
-            box-shadow: 0 0 10px #00ff88;
-            animation: pulseDot 2s infinite;
+        .chip {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.65rem;
+            border-radius: 4px;
+            background: rgba(255, 140, 66, 0.12);
+            border: 1px solid rgba(255, 140, 66, 0.25);
+            color: var(--amber);
         }
 
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.8); }
+        .chip.iot {
+            background: rgba(0, 240, 255, 0.1);
+            border-color: rgba(0, 240, 255, 0.3);
+            color: var(--cyan-accent);
         }
 
         .bio {
             color: var(--text-muted);
             margin-bottom: 1.6rem;
-            max-width: 680px;
             font-size: 1rem;
             line-height: 1.7;
-            opacity: 0;
-            transform: translateY(14px);
-            animation: riseIn 0.7s ease-out 0.22s forwards;
-        }
-
-        @keyframes riseIn {
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .btn-links {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.75rem;
-            opacity: 0;
-            transform: translateY(14px);
-            animation: riseIn 0.7s ease-out 0.32s forwards;
+            gap: 0.8rem;
         }
 
-        .btn-links a {
+        .btn-action {
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
-            background: rgba(35, 22, 16, 0.75);
+            gap: 0.5rem;
+            background: rgba(36, 23, 16, 0.8);
             color: var(--amber);
             border: 1px solid var(--glass-border);
-            padding: 0.6rem 1.2rem;
+            padding: 0.65rem 1.25rem;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
             font-size: 0.92rem;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.25, 1);
-            position: relative;
-            overflow: hidden;
+            backdrop-filter: blur(8px);
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.25, 1);
+            cursor: pointer;
         }
 
-        .btn-links a::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(60deg, transparent, rgba(255, 171, 94, 0.15), transparent);
-            transform: rotate(30deg) translateY(-100%);
-            transition: transform 0.6s ease;
-        }
-
-        .btn-links a:hover::after {
-            transform: rotate(30deg) translateY(100%);
-        }
-
-        .btn-links a:hover {
-            background-color: rgba(255, 140, 66, 0.2);
+        .btn-action:hover {
+            background: rgba(255, 140, 66, 0.22);
             border-color: var(--amber);
-            box-shadow: 0 0 20px rgba(255, 140, 66, 0.4), 0 4px 12px rgba(0,0,0,0.5);
+            box-shadow: 0 0 20px rgba(255, 140, 66, 0.45);
             transform: translateY(-3px);
             color: #ffffff;
         }
 
         .btn-cv {
-            background: linear-gradient(135deg, rgba(255, 122, 61, 0.4), rgba(255, 171, 94, 0.2)) !important;
+            background: linear-gradient(135deg, rgba(255, 117, 54, 0.4), rgba(255, 170, 90, 0.2)) !important;
             border-color: var(--amber) !important;
         }
 
         /* ================= Sections ================= */
         section {
             position: relative;
-            margin-bottom: 3.5rem;
+            margin-bottom: 3.8rem;
             opacity: 0;
             transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.25, 1);
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.25, 1);
         }
 
         section.visible {
@@ -295,46 +346,55 @@
             border-bottom: 1px solid var(--glass-border);
             padding-bottom: 0.75rem;
             margin-bottom: 1.8rem;
-            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        h2 span.title-text {
             display: flex;
             align-items: center;
             gap: 0.6rem;
         }
 
-        h2::before {
-            content: "//";
+        h2 span.title-text::before {
+            content: "⚡";
+            font-size: 1.2rem;
             color: var(--amber);
-            font-family: 'Space Grotesk', monospace;
-            font-weight: 800;
+        }
+
+        h2 span.sec-code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--amber-deep);
+            font-weight: normal;
         }
 
         /* ================= 3D Tilt Cards ================= */
         .skills-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.3rem;
         }
 
         .tilt-card {
             position: relative;
-            background: var(--glass-card);
+            background: var(--bg-card);
             border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 1.5rem;
+            border-radius: 14px;
+            padding: 1.6rem;
             backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
             transform-style: preserve-3d;
             transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.15s ease-out;
             will-change: transform;
             overflow: hidden;
         }
 
-        /* Holographic Card Glare Effect */
         .tilt-card .card-glare {
             position: absolute;
             inset: 0;
             pointer-events: none;
-            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 171, 94, 0.18), transparent 60%);
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 171, 94, 0.22), transparent 60%);
             opacity: 0;
             transition: opacity 0.3s;
             z-index: 1;
@@ -346,7 +406,7 @@
 
         .tilt-card:hover {
             border-color: var(--amber);
-            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 140, 66, 0.25);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 28px rgba(255, 140, 66, 0.28);
         }
 
         .tilt-card-content {
@@ -358,21 +418,20 @@
         .skill-card h3, .project-card h3, .experience-card h3 {
             color: #ffffff;
             margin-bottom: 0.6rem;
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            letter-spacing: -0.01em;
         }
 
         .skill-card p, .project-card p, .experience-card p {
             color: var(--text-muted);
             font-size: 0.95rem;
-            line-height: 1.6;
+            line-height: 1.65;
         }
 
         .projects-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 1.8rem;
+            gap: 2rem;
         }
 
         /* 3D Floating Project Badges */
@@ -380,11 +439,11 @@
             position: absolute;
             top: -16px;
             right: -16px;
-            width: 70px;
-            height: 70px;
+            width: 72px;
+            height: 72px;
             pointer-events: none;
             opacity: 0.95;
-            filter: drop-shadow(0 0 14px rgba(255, 140, 66, 0.5));
+            filter: drop-shadow(0 0 14px rgba(255, 140, 66, 0.6));
             animation: cardIconFloat 6s ease-in-out infinite;
             z-index: 4;
             transform: translateZ(40px);
@@ -394,12 +453,184 @@
             display: block;
             width: 100%;
             height: 100%;
-            overflow: visible;
         }
 
         @keyframes cardIconFloat {
             0%, 100% { transform: translateZ(40px) translateY(0) rotate(-4deg); }
             50%      { transform: translateZ(40px) translateY(-10px) rotate(4deg); }
+        }
+
+        /* ================= LIVE RADAR CANVAS DISPLAY ================= */
+        .radar-widget {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: rgba(10, 7, 5, 0.9);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1.2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .radar-screen-container {
+            width: 130px;
+            height: 130px;
+            position: relative;
+            border-radius: 50%;
+            background: #040805;
+            border: 2px solid rgba(0, 255, 136, 0.4);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        #radarCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .radar-telemetry {
+            flex: 1;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--amber);
+        }
+
+        .radar-telemetry .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.35rem;
+            border-bottom: 1px dashed rgba(255, 170, 90, 0.15);
+            padding-bottom: 0.2rem;
+        }
+
+        .radar-telemetry .val {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        /* ================= INTERACTIVE CODE / ARCHITECTURE TABS ================= */
+        .tab-box {
+            margin-top: 1.2rem;
+            background: rgba(10, 6, 4, 0.85);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tab-headers {
+            display: flex;
+            background: rgba(20, 13, 9, 0.9);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            color: var(--amber);
+            background: rgba(255, 140, 66, 0.12);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #d8c2aa;
+            line-height: 1.5;
+            max-height: 160px;
+            overflow-y: auto;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ================= DRONE FUNDING ================= */
+        .funding-card {
+            border-color: rgba(255, 140, 66, 0.45);
+            background: linear-gradient(160deg, rgba(255, 140, 66, 0.14), var(--bg-card) 65%);
+        }
+
+        .funding-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .funding-amount {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .funding-percent {
+            color: var(--amber);
+            font-weight: 700;
+            font-size: 1.15rem;
+            text-shadow: 0 0 10px rgba(255, 140, 66, 0.5);
+        }
+
+        .funding-bar {
+            position: relative;
+            width: 100%;
+            height: 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+
+        .funding-bar-fill {
+            height: 100%;
+            width: 46%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--amber-deep), var(--amber), #ffe4c2);
+            box-shadow: 0 0 18px rgba(255, 140, 66, 0.8);
+            animation: pulseGlow 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.3); }
+        }
+
+        .funding-qr {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            margin-top: 1.2rem;
+            padding: 1rem;
+            background: rgba(20, 13, 9, 0.8);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+        }
+
+        .funding-qr img {
+            width: 100px;
+            height: auto;
+            border-radius: 8px;
+            flex-shrink: 0;
+            border: 1px solid var(--glass-border);
+            transition: transform 0.3s ease;
+        }
+
+        .funding-qr img:hover {
+            transform: scale(1.06);
         }
 
         .project-card .tech-stack {
@@ -414,153 +645,7 @@
             margin-top: 1rem;
         }
 
-        /* ================= Drone Funding Card ================= */
-        .funding-card {
-            border-color: rgba(255, 140, 66, 0.4);
-            background: linear-gradient(160deg, rgba(255, 140, 66, 0.12), var(--glass-card) 60%);
-        }
-
-        .funding-status {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-top: 1.2rem;
-            margin-bottom: 0.5rem;
-            flex-wrap: wrap;
-            gap: 0.25rem;
-        }
-
-        .funding-status .funding-amount {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: #ffffff;
-        }
-
-        .funding-status .funding-amount span {
-            color: var(--text-muted);
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
-
-        .funding-status .funding-percent {
-            color: var(--amber);
-            font-weight: 700;
-            font-size: 1.1rem;
-            text-shadow: 0 0 10px rgba(255, 140, 66, 0.5);
-        }
-
-        .funding-bar {
-            position: relative;
-            width: 100%;
-            height: 14px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--glass-border);
-            overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .funding-bar-fill {
-            position: relative;
-            height: 100%;
-            width: 46%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, var(--amber-deep), var(--amber), #ffe0b2);
-            box-shadow: 0 0 15px rgba(255, 140, 66, 0.7);
-            animation: fundingGlow 3s ease-in-out infinite alternate;
-        }
-
-        @keyframes fundingGlow {
-            from { filter: brightness(1); }
-            to { filter: brightness(1.25); }
-        }
-
-        .funding-note {
-            margin-top: 0.7rem;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .funding-qr {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-            margin-top: 1.2rem;
-            padding: 1rem;
-            background: rgba(30, 20, 14, 0.6);
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-
-        .funding-qr img {
-            width: 100px;
-            height: auto;
-            border-radius: 8px;
-            display: block;
-            flex-shrink: 0;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            transition: transform 0.3s ease;
-        }
-
-        .funding-qr img:hover {
-            transform: scale(1.05);
-        }
-
-        .funding-qr-text {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .funding-qr-text strong {
-            display: block;
-            color: #ffffff;
-            font-size: 1rem;
-            margin-bottom: 0.3rem;
-        }
-
-        /* Buttons inside cards */
-        .project-card a,
-        .experience-card a {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background-color: rgba(35, 22, 16, 0.8) !important;
-            color: var(--amber) !important;
-            border: 1px solid var(--glass-border) !important;
-            padding: 0.55rem 1.1rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.92rem;
-            transition: all 0.25s ease;
-        }
-
-        .project-card a:hover,
-        .experience-card a:hover {
-            background-color: rgba(255, 140, 66, 0.2) !important;
-            border-color: var(--amber) !important;
-            box-shadow: 0 0 20px rgba(255, 140, 66, 0.35);
-            transform: translateY(-2px);
-            color: #fff !important;
-        }
-
-        .experience-card {
-            margin-bottom: 1.5rem;
-        }
-
-        footer {
-            position: relative;
-            text-align: center;
-            color: var(--text-muted);
-            border-top: 1px solid var(--glass-border);
-            padding-top: 2rem;
-            font-size: 0.95rem;
-        }
-
-        /* ================= 3D Intro Reveal ================= */
+        /* ================= INTRO OVERLAY ================= */
         #intro {
             position: fixed;
             inset: 0;
@@ -572,15 +657,6 @@
             background: var(--bg-dark);
             overflow: hidden;
             cursor: pointer;
-        }
-
-        #intro::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse at 70% 20%, rgba(255, 175, 120, 0.2), transparent 55%),
-                radial-gradient(ellipse at 50% 100%, rgba(255, 120, 60, 0.1), transparent 60%);
         }
 
         .intro-stage {
@@ -595,7 +671,6 @@
             inset: 0;
             width: 100%;
             height: 100%;
-            overflow: visible;
             animation: shardsDim 0.7s ease-out 1.85s forwards;
         }
 
@@ -637,7 +712,7 @@
         }
 
         @keyframes logoIn {
-            0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6); filter: drop-shadow(0 0 0 rgba(255,140,66,0)); }
+            0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
             55%  { opacity: 1; transform: translate(-50%, -50%) scale(1.1); filter: drop-shadow(0 0 35px rgba(255,140,66,0.8)); }
             100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 20px rgba(255,140,66,0.5)); }
         }
@@ -651,18 +726,6 @@
             animation: riseIn 0.8s ease-out 2.2s forwards;
         }
 
-        .intro-text h1 {
-            font-size: clamp(1.6rem, 6vw, 2.4rem);
-            color: #ffffff;
-            margin-bottom: 0.4rem;
-        }
-
-        .intro-text .intro-tagline {
-            color: var(--amber);
-            font-size: 1.05rem;
-            font-weight: 600;
-        }
-
         .intro-hint {
             position: absolute;
             bottom: 2rem;
@@ -670,7 +733,6 @@
             font-size: 0.82rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            opacity: 0;
             animation: riseIn 0.8s ease-out 3s forwards, hintPulse 2s ease-in-out 3.8s infinite;
         }
 
@@ -683,22 +745,13 @@
             position: absolute;
             top: 1.8rem;
             right: 1.8rem;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--glass-border);
-            color: var(--text-muted);
+            color: var(--amber);
             padding: 0.45rem 1rem;
             border-radius: 8px;
-            font-size: 0.85rem;
-            font-family: inherit;
+            font-family: 'JetBrains Mono', monospace;
             cursor: pointer;
-            backdrop-filter: blur(8px);
-            transition: all 0.2s ease;
-        }
-
-        .intro-skip:hover {
-            color: var(--amber);
-            border-color: var(--amber);
-            background: rgba(255, 140, 66, 0.15);
         }
 
         #intro.hide {
@@ -710,29 +763,39 @@
             to { opacity: 0; transform: scale(1.08); filter: blur(8px); }
         }
 
+        @keyframes riseIn { to { opacity: 1; transform: translateY(0); } }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            border-top: 1px solid var(--glass-border);
+            padding-top: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
         @media (max-width: 768px) {
-            .header-grid { flex-direction: column; align-items: flex-start; }
-            .project-icon { width: 50px; height: 50px; top: -10px; right: -10px; }
+            .header-layout { flex-direction: column; align-items: flex-start; }
+            .project-icon { width: 50px; height: 50px; }
             .funding-qr { flex-direction: column; align-items: flex-start; }
-            .funding-qr img { width: 120px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 3D Three.js WebGL Canvas -->
+    <!-- 3D Three.js WebGL Background -->
     <canvas id="webgl-bg"></canvas>
 
     <!-- Intro Reveal Screen -->
     <div id="intro" role="presentation" aria-hidden="true">
-        <button class="intro-skip" id="introSkip" type="button">Skip ↦</button>
+        <button class="intro-skip" id="introSkip" type="button">SKIP &gt;&gt;</button>
 
         <div class="intro-stage">
             <svg viewBox="0 0 400 400">
                 <defs>
                     <linearGradient id="shardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#ff7a3d"/>
-                        <stop offset="100%" stop-color="#ffab5e"/>
+                        <stop offset="0%" stop-color="#ff7536"/>
+                        <stop offset="100%" stop-color="#ffaa5a"/>
                     </linearGradient>
                 </defs>
                 <polygon class="shard s1" points="200.0,75.0 239.8,98.0 239.8,144.0 200.0,167.0 160.2,144.0 160.2,98.0"/>
@@ -747,28 +810,53 @@
 
         <div class="intro-text">
             <h1>CHORN PHILIP <span class="khmer">ចន ហ្វីលីប</span></h1>
-            <p class="intro-tagline">Electrical Engineering &amp; Automation Developer</p>
+            <p style="color: var(--amber); font-family: 'JetBrains Mono', monospace; font-size: 0.95rem;">[SYSTEM: INITIALIZING 3D TELEMETRY...]</p>
         </div>
 
-        <p class="intro-hint">Tap anywhere to enter</p>
+        <p class="intro-hint">Click anywhere to enter</p>
     </div>
 
-    <!-- Main Container -->
+    <!-- Main Content Container -->
     <div class="container">
+        
+        <!-- Top IoT Live Telemetry HUD Bar -->
+        <div class="iot-topbar">
+            <div class="iot-metrics">
+                <div class="iot-node">
+                    <span class="status-beacon"></span>
+                    <span>ESP32 NODE: <strong style="color:#fff;">ONLINE</strong></span>
+                </div>
+                <div class="iot-node">
+                    <span>FREQ: <strong style="color:#fff;">240MHz</strong></span>
+                </div>
+                <div class="iot-node">
+                    <span>LOC: <strong style="color:#fff;">PHNOM PENH (<span id="sys-clock">--:--:--</span>)</strong></span>
+                </div>
+            </div>
+            <button class="audio-toggle-btn" id="audioToggle" onclick="toggleAudioFx()">
+                <span id="audioIcon">🔇</span> <span id="audioText">AUDIO: OFF</span>
+            </button>
+        </div>
+
+        <!-- Header Profile -->
         <header>
-            <div class="header-grid">
-                <div class="brand-logo-container">
+            <div class="header-layout">
+                <div class="brand-logo-frame">
                     <img src="ph logo.png" alt="PH logo" class="brand-logo">
                 </div>
-                <div class="header-content">
+                <div class="header-main">
                     <h1>CHORN PHILIP <span class="khmer">ចន ហ្វីលីប</span></h1>
-                    <div class="tagline">Electrical Engineering Student &amp; Automation Developer</div>
-                    <p class="bio">Dedicated engineering student in the ECAM LaSalle international program at the Institute of Technology of Cambodia (ITC) specializing in Robotics and Automation. Bringing practical background in MEP systems, circuit troubleshooting, microcontroller firmware, and smart automation concepts.</p>
+                    <div class="header-tags">
+                        <span class="chip">⚡ ELECTRICAL ENGINEERING</span>
+                        <span class="chip iot">🤖 ROBOTICS &amp; AUTOMATION</span>
+                        <span class="chip">📡 ITC / ECAM LASALLE</span>
+                    </div>
+                    <p class="bio">Dedicated engineering student in the ECAM LaSalle international program at the Institute of Technology of Cambodia (ITC) specializing in Robotics, Embedded Firmware (STM32/ESP32), Circuit PCB Design, and Smart MEP Infrastructure.</p>
                     <div class="btn-links">
-                        <a href="CHORN_PHILIP_CV.pdf" target="_blank" class="btn-cv">📄 Download Full CV</a>
-                        <a href="mailto:Chornphilip8@gmail.com">✉️ Email Me</a>
-                        <a href="https://github.com/philip-djohnn-enz" target="_blank">💻 GitHub Profile</a>
-                        <a href="https://linkedin.com" target="_blank">🔗 LinkedIn</a>
+                        <a href="CHORN_PHILIP_CV.pdf" target="_blank" class="btn-action btn-cv">📄 Download Full CV</a>
+                        <a href="mailto:Chornphilip8@gmail.com" class="btn-action">✉️ Email Me</a>
+                        <a href="https://github.com/philip-djohnn-enz" target="_blank" class="btn-action">💻 GitHub Profile</a>
+                        <a href="https://linkedin.com" target="_blank" class="btn-action">🔗 LinkedIn</a>
                     </div>
                 </div>
             </div>
@@ -776,7 +864,10 @@
 
         <!-- Technical Expertise Section -->
         <section id="skills-section">
-            <h2>Technical Expertise</h2>
+            <h2>
+                <span class="title-text">Technical Expertise</span>
+                <span class="sec-code">&lt;SKILLS_MATRIX /&gt;</span>
+            </h2>
             <div class="skills-grid">
                 <div class="tilt-card skill-card">
                     <div class="card-glare"></div>
@@ -788,14 +879,14 @@
                 <div class="tilt-card skill-card">
                     <div class="card-glare"></div>
                     <div class="tilt-card-content">
-                        <h3>Embedded &amp; Automation</h3>
-                        <p>Microcontroller programming (STM32, ESP32), sensor interfacing, motor driver integrations, and PID control algorithm implementation.</p>
+                        <h3>Embedded &amp; IoT Automation</h3>
+                        <p>Microcontroller programming (STM32, ESP32, Arduino), sensor interfacing (I2C/SPI/UART), motor driver integrations, and PID control algorithms.</p>
                     </div>
                 </div>
                 <div class="tilt-card skill-card">
                     <div class="card-glare"></div>
                     <div class="tilt-card-content">
-                        <h3>Tools &amp; Software</h3>
+                        <h3>Engineering Software</h3>
                         <p>KiCad, LTspice, MATLAB/Simulink, AutoCAD, LightBurn, DIAlux Evo, and Git version control.</p>
                     </div>
                 </div>
@@ -804,10 +895,13 @@
 
         <!-- Featured Projects Section -->
         <section id="projects-section">
-            <h2>Featured Projects</h2>
+            <h2>
+                <span class="title-text">Featured Projects</span>
+                <span class="sec-code">&lt;ROBOTICS_&amp;_AUTOMATION /&gt;</span>
+            </h2>
             <div class="projects-grid">
 
-                <!-- Drone Project -->
+                <!-- 1. Drone Build Fundraiser -->
                 <div class="tilt-card project-card funding-card">
                     <div class="card-glare"></div>
                     <div class="tilt-card-content">
@@ -815,8 +909,8 @@
                             <svg viewBox="0 0 100 100">
                                 <defs>
                                     <linearGradient id="gradDrone" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stop-color="#ff7a3d"/>
-                                        <stop offset="100%" stop-color="#ffab5e"/>
+                                        <stop offset="0%" stop-color="#ff7536"/>
+                                        <stop offset="100%" stop-color="#ffaa5a"/>
                                     </linearGradient>
                                 </defs>
                                 <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
@@ -831,95 +925,30 @@
                                 <circle cx="76" cy="68" r="7" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
                             </svg>
                         </span>
-                        <h3>🚁 Drone Build — Fundraising in Progress</h3>
-                        <p>Raising funds to design and build a custom drone platform for aerial automation and sensor-integration experiments — Stage 1 (Current): Developing a working prototype to demonstrate core aerial automation. Stage 2: Scaling the design into a heavy-lift platform built for robust agricultural use.</p>
+                        <h3>🚁 Autonomous Drone Build — Live Fundraiser</h3>
+                        <p>Designing and fabricating a custom aerial drone platform for flight automation, sensor telemetry, and agricultural payloads — Stage 1: Prototype validation. Stage 2: Heavy-lift autonomous agricultural platform.</p>
 
                         <div class="funding-status">
-                            <div class="funding-amount">$230 <span>raised of $500 goal</span></div>
-                            <div class="funding-percent">46%</div>
+                            <div class="funding-amount">$230 <span style="font-size: 0.95rem; color: var(--text-muted); font-weight: normal;">raised of $500 goal</span></div>
+                            <div class="funding-percent">46% FUNDED</div>
                         </div>
-                        <div class="funding-bar" role="progressbar" aria-valuenow="46" aria-valuemin="0" aria-valuemax="100" aria-label="Drone project funding progress">
+                        <div class="funding-bar" role="progressbar">
                             <div class="funding-bar-fill"></div>
                         </div>
-                        <p class="funding-note">$270 to go — reach out if you'd like to support the build.</p>
+                        <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">$270 remaining to reach phase-1 flight prototype.</p>
 
                         <div class="funding-qr">
-                            <img src="Donate qr.jpg" alt="KHQR code to support the drone build — Chorn Philip">
-                            <div class="funding-qr-text">
-                                <strong>Scan with Banking App</strong>
-                                Scan KHQR with any bank app to contribute directly to the aerial automation project.
+                            <img src="Donate qr.jpg" alt="KHQR code — Chorn Philip">
+                            <div>
+                                <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 0.2rem;">Scan to Support Drone Build</strong>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Use any mobile banking app to scan the KHQR code directly.</span>
                             </div>
                         </div>
-
-                        <span class="tech-stack">Fundraising | Aerial Robotics | Automation</span>
+                        <span class="tech-stack">Aerial Robotics | Telemetry | Power Distribution</span>
                     </div>
                 </div>
 
-                <!-- Line Follower Robot -->
-                <div class="tilt-card project-card">
-                    <div class="card-glare"></div>
-                    <div class="tilt-card-content">
-                        <span class="project-icon" aria-hidden="true" style="animation-delay:0s;">
-                            <svg viewBox="0 0 100 100">
-                                <defs>
-                                    <linearGradient id="gradRobot" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stop-color="#ff7a3d"/>
-                                        <stop offset="100%" stop-color="#ffab5e"/>
-                                    </linearGradient>
-                                </defs>
-                                <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradRobot)" stroke-width="2.5"/>
-                                <rect x="32" y="38" width="36" height="26" rx="6" fill="none" stroke="url(#gradRobot)" stroke-width="2.5"/>
-                                <circle cx="42" cy="50" r="3.2" fill="url(#gradRobot)"/>
-                                <circle cx="58" cy="50" r="3.2" fill="url(#gradRobot)"/>
-                                <line x1="50" y1="38" x2="50" y2="28" stroke="url(#gradRobot)" stroke-width="2.5"/>
-                                <circle cx="50" cy="25" r="3" fill="none" stroke="url(#gradRobot)" stroke-width="2.5"/>
-                                <path d="M28 70 Q50 82 72 70" fill="none" stroke="url(#gradRobot)" stroke-width="2.5"/>
-                            </svg>
-                        </span>
-                        <h3>🏆 Line Follower Robot (Champion - 1st Place)</h3>
-                        <p>Designed and built an autonomous path-finding robot utilizing infrared sensors and custom microcontroller programming. Competed and achieved 1st Place in the 2026 Robotics Competition.</p>
-
-                        <div style="margin-top: 1.2rem;">
-                            <a href="https://drive.google.com/drive/folders/1AfE8Use7veXtqmIMWOBtyBM0xQOPRKwj?usp=sharing" target="_blank">
-                                ▶ Watch Robot Demo (Google Drive)
-                            </a>
-                        </div>
-                        <span class="tech-stack">Embedded Systems | Robotics Assembly | Sensor Integration</span>
-                    </div>
-                </div>
-
-                <!-- RCBO Analysis -->
-                <div class="tilt-card project-card">
-                    <div class="card-glare"></div>
-                    <div class="tilt-card-content">
-                        <span class="project-icon" aria-hidden="true" style="animation-delay:1.4s;">
-                            <svg viewBox="0 0 100 100">
-                                <defs>
-                                    <linearGradient id="gradBreaker" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stop-color="#ff7a3d"/>
-                                        <stop offset="100%" stop-color="#ffab5e"/>
-                                    </linearGradient>
-                                </defs>
-                                <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradBreaker)" stroke-width="2.5"/>
-                                <rect x="36" y="30" width="28" height="42" rx="4" fill="none" stroke="url(#gradBreaker)" stroke-width="2.5"/>
-                                <line x1="50" y1="38" x2="50" y2="48" stroke="url(#gradBreaker)" stroke-width="2.5"/>
-                                <circle cx="50" cy="52" r="2.6" fill="url(#gradBreaker)"/>
-                                <path d="M53 32 L45 48 L52 48 L44 64" fill="none" stroke="url(#gradBreaker)" stroke-width="2.5" stroke-linejoin="round"/>
-                            </svg>
-                        </span>
-                        <h3>⚡ Residual Current Breaker with Overcurrent (RCBO) Analysis</h3>
-                        <p>Conducted detailed academic research and technical system evaluations on differential current sensing, fault detection speeds, and electrical safety standards for commercial distribution units.</p>
-
-                        <div style="margin-top: 1.2rem;">
-                            <a href="https://www.facebook.com/share/v/1bsX4uAJKE/" target="_blank">
-                                ▶ Watch Presentation Video (Facebook)
-                            </a>
-                        </div>
-                        <span class="tech-stack">Power Systems | Circuit Protection | Technical Documentation</span>
-                    </div>
-                </div>
-
-                <!-- Ultrasonic Radar System -->
+                <!-- 2. Ultrasonic Radar with Live Canvas Sonar -->
                 <div class="tilt-card project-card">
                     <div class="card-glare"></div>
                     <div class="tilt-card-content">
@@ -927,27 +956,55 @@
                             <svg viewBox="0 0 100 100">
                                 <defs>
                                     <linearGradient id="gradRadar" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stop-color="#ff7a3d"/>
-                                        <stop offset="100%" stop-color="#ffab5e"/>
+                                        <stop offset="0%" stop-color="#ff7536"/>
+                                        <stop offset="100%" stop-color="#ffaa5a"/>
                                     </linearGradient>
                                 </defs>
                                 <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradRadar)" stroke-width="2.5"/>
                                 <circle cx="50" cy="52" r="24" fill="none" stroke="url(#gradRadar)" stroke-width="1.6" opacity="0.55"/>
                                 <circle cx="50" cy="52" r="16" fill="none" stroke="url(#gradRadar)" stroke-width="1.6" opacity="0.7"/>
-                                <circle cx="50" cy="52" r="8" fill="none" stroke="url(#gradRadar)" stroke-width="1.6" opacity="0.85"/>
-                                <line x1="50" y1="52" x2="50" y2="28" stroke="url(#gradRadar)" stroke-width="1.6" opacity="0.6"/>
-                                <line x1="50" y1="52" x2="26" y2="52" stroke="url(#gradRadar)" stroke-width="1.6" opacity="0.6"/>
-                                <path d="M50 52 L50 24 A28 28 0 0 1 74 38 Z" fill="url(#gradRadar)" opacity="0.22"/>
                                 <line x1="50" y1="52" x2="72" y2="40" stroke="url(#gradRadar)" stroke-width="2.5"/>
-                                <circle cx="50" cy="52" r="2.6" fill="url(#gradRadar)"/>
-                                <circle cx="60" cy="44" r="2" fill="url(#gradRadar)"/>
                             </svg>
                         </span>
                         <h3>📡 Ultrasonic Radar System (Manual &amp; Auto Mode)</h3>
-                        <p>Developed a dual-mode ultrasonic tracking system using Arduino and HC-SR04 sensors. Features automated continuous sweep via servo motor along with manual target tracking override, displaying real-time distance and angular position data.</p>
+                        <p>Developed a dual-mode ultrasonic sonar tracking system using Arduino and HC-SR04 sensors with 180° continuous servo sweep and manual coordinate tracking override.</p>
+
+                        <!-- Live Real-Time Interactive Radar HUD -->
+                        <div class="radar-widget">
+                            <div class="radar-screen-container">
+                                <canvas id="radarCanvas" width="130" height="130"></canvas>
+                            </div>
+                            <div class="radar-telemetry">
+                                <div class="data-row"><span>SWEEP STATUS:</span> <span class="val" style="color:var(--green-active)">ACTIVE 180°</span></div>
+                                <div class="data-row"><span>AZIMUTH ANGLE:</span> <span class="val" id="radar-angle">094°</span></div>
+                                <div class="data-row"><span>DETECTED RANGE:</span> <span class="val" id="radar-dist">28.4 cm</span></div>
+                                <div class="data-row"><span>BAUD RATE:</span> <span class="val">115200 bps</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Switchable Code / Specs Tab -->
+                        <div class="tab-box">
+                            <div class="tab-headers">
+                                <button class="tab-btn active" onclick="switchTab(event, 'radar-c')">Arduino C++</button>
+                                <button class="tab-btn" onclick="switchTab(event, 'radar-hw')">Pinout &amp; Sensors</button>
+                            </div>
+                            <div class="tab-content active" id="radar-c">
+// Ultrasonic Pulse Trigger & Distance Calculate<br>
+digitalWrite(TRIG_PIN, LOW); delayMicroseconds(2);<br>
+digitalWrite(TRIG_PIN, HIGH); delayMicroseconds(10);<br>
+long duration = pulseIn(ECHO_PIN, HIGH);<br>
+float distance = (duration * 0.0343) / 2.0; // cm
+                            </div>
+                            <div class="tab-content" id="radar-hw">
+• Microcontroller: Arduino Nano / Atmega328P<br>
+• Ultrasonic Transceiver: HC-SR04 (40kHz)<br>
+• Actuator: SG90 Micro Servo (PWM Pin D9)<br>
+• Interface: Processing.js Real-time Serial GUI
+                            </div>
+                        </div>
 
                         <div style="margin-top: 1.2rem;">
-                            <a href="https://drive.google.com/file/d/1V-l5Fa40lRGcaoH8SDsfDkRvz4n-4CN9/view?usp=sharing" target="_blank">
+                            <a href="https://drive.google.com/file/d/1V-l5Fa40lRGcaoH8SDsfDkRvz4n-4CN9/view?usp=sharing" target="_blank" class="btn-action">
                                 ▶ Watch Radar Demo (Google Drive)
                             </a>
                         </div>
@@ -955,7 +1012,37 @@
                     </div>
                 </div>
 
-                <!-- Pookie Quadruped -->
+                <!-- 3. Line Follower Robot Champion -->
+                <div class="tilt-card project-card">
+                    <div class="card-glare"></div>
+                    <div class="tilt-card-content">
+                        <span class="project-icon" aria-hidden="true" style="animation-delay:0s;">
+                            <svg viewBox="0 0 100 100">
+                                <defs>
+                                    <linearGradient id="gradRobot" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ff7536"/>
+                                        <stop offset="100%" stop-color="#ffaa5a"/>
+                                    </linearGradient>
+                                </defs>
+                                <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradRobot)" stroke-width="2.5"/>
+                                <rect x="32" y="38" width="36" height="26" rx="6" fill="none" stroke="url(#gradRobot)" stroke-width="2.5"/>
+                                <circle cx="42" cy="50" r="3.2" fill="url(#gradRobot)"/>
+                                <circle cx="58" cy="50" r="3.2" fill="url(#gradRobot)"/>
+                            </svg>
+                        </span>
+                        <h3>🏆 Line Follower Robot (Champion - 1st Place)</h3>
+                        <p>Engineered and coded an autonomous high-speed path-tracking robot utilizing an IR sensor array with custom tuned PID feedback algorithms. Won 1st Place in the 2026 Robotics Competition.</p>
+
+                        <div style="margin-top: 1.2rem;">
+                            <a href="https://drive.google.com/drive/folders/1AfE8Use7veXtqmIMWOBtyBM0xQOPRKwj?usp=sharing" target="_blank" class="btn-action">
+                                ▶ Watch Robot Demo (Google Drive)
+                            </a>
+                        </div>
+                        <span class="tech-stack">Embedded Systems | PID Motor Tuning | Sensor Integration</span>
+                    </div>
+                </div>
+
+                <!-- 4. Pookie Quadruped -->
                 <div class="tilt-card project-card">
                     <div class="card-glare"></div>
                     <div class="tilt-card-content">
@@ -963,28 +1050,53 @@
                             <svg viewBox="0 0 100 100">
                                 <defs>
                                     <linearGradient id="gradQuad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stop-color="#ff7a3d"/>
-                                        <stop offset="100%" stop-color="#ffab5e"/>
+                                        <stop offset="0%" stop-color="#ff7536"/>
+                                        <stop offset="100%" stop-color="#ffaa5a"/>
                                     </linearGradient>
                                 </defs>
                                 <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradQuad)" stroke-width="2.5"/>
                                 <rect x="30" y="40" width="40" height="18" rx="6" fill="none" stroke="url(#gradQuad)" stroke-width="2.5"/>
                                 <circle cx="41" cy="49" r="2.6" fill="url(#gradQuad)"/>
                                 <circle cx="59" cy="49" r="2.6" fill="url(#gradQuad)"/>
-                                <path d="M34 58 L30 72 M34 58 L38 72" stroke="url(#gradQuad)" stroke-width="2.5" stroke-linecap="round"/>
-                                <path d="M66 58 L62 72 M66 58 L70 72" stroke="url(#gradQuad)" stroke-width="2.5" stroke-linecap="round"/>
-                                <path d="M38 40 L32 28 M62 40 L68 28" stroke="url(#gradQuad)" stroke-width="2.5" stroke-linecap="round"/>
                             </svg>
                         </span>
                         <h3>🤖 Pookie Mini Quadruped Robot</h3>
-                        <p>Built an open-source, multi-jointed walking robot featuring real-time wireless control via a captive Wi-Fi portal and dynamic facial expressions on an OLED display (Currently integrating local AI on-device control).</p>
+                        <p>Built an 8-DOF walking quadruped featuring inverse kinematics gait routines, captive Wi-Fi web-portal control, and expressive animated OLED facial status screen.</p>
 
                         <div style="margin-top: 1.2rem;">
-                            <a href="https://drive.google.com/drive/folders/1LS8MxVf53c4X_F-wFqlXthylPBTje6_q?usp=sharing" target="_blank">
+                            <a href="https://drive.google.com/drive/folders/1LS8MxVf53c4X_F-wFqlXthylPBTje6_q?usp=sharing" target="_blank" class="btn-action">
                                 ▶ Watch Robot Demo (Google Drive)
                             </a>
                         </div>
-                        <span class="tech-stack">Microcontrollers | Servo Calibration | IoT Interface</span>
+                        <span class="tech-stack">Microcontrollers | Kinematics | IoT Interface</span>
+                    </div>
+                </div>
+
+                <!-- 5. RCBO Analysis -->
+                <div class="tilt-card project-card">
+                    <div class="card-glare"></div>
+                    <div class="tilt-card-content">
+                        <span class="project-icon" aria-hidden="true" style="animation-delay:1.4s;">
+                            <svg viewBox="0 0 100 100">
+                                <defs>
+                                    <linearGradient id="gradBreaker" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ff7536"/>
+                                        <stop offset="100%" stop-color="#ffaa5a"/>
+                                    </linearGradient>
+                                </defs>
+                                <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradBreaker)" stroke-width="2.5"/>
+                                <rect x="36" y="30" width="28" height="42" rx="4" fill="none" stroke="url(#gradBreaker)" stroke-width="2.5"/>
+                            </svg>
+                        </span>
+                        <h3>⚡ Residual Current Breaker with Overcurrent (RCBO) Analysis</h3>
+                        <p>Conducted academic research and technical system evaluations on differential current sensing, fault detection speeds, and electrical safety standards.</p>
+
+                        <div style="margin-top: 1.2rem;">
+                            <a href="https://www.facebook.com/share/v/1bsX4uAJKE/" target="_blank" class="btn-action">
+                                ▶ Watch Presentation Video (Facebook)
+                            </a>
+                        </div>
+                        <span class="tech-stack">Power Systems | Circuit Protection | Safety Testing</span>
                     </div>
                 </div>
 
@@ -993,13 +1105,16 @@
 
         <!-- Professional Experience Section -->
         <section id="experience-section">
-            <h2>Professional Experience</h2>
+            <h2>
+                <span class="title-text">Professional Experience</span>
+                <span class="sec-code">&lt;MEP_&amp;_INDUSTRY /&gt;</span>
+            </h2>
 
-            <div class="tilt-card experience-card">
+            <div class="tilt-card experience-card" style="margin-bottom: 1.5rem;">
                 <div class="card-glare"></div>
                 <div class="tilt-card-content">
                     <h3>MEP Draftsman &amp; Technical Coordinator – B&amp;MEP Engineering Construction Co., Ltd</h3>
-                    <p><em>August 2025 – Present</em></p>
+                    <p style="color: var(--amber); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace;">August 2025 – Present</p>
                     <p style="margin-top: 0.6rem;">
                         • Managed MEP drafting for 5+ major commercial projects (banks and dental clinics), producing precise CAD layout plans.<br>
                         • Performed electrical load calculations and generated Bill of Quantities (BOQ) files.<br>
@@ -1007,7 +1122,7 @@
                     </p>
 
                     <div style="margin-top: 1.2rem;">
-                        <a href="https://drive.google.com/drive/folders/1Iauf2hc7H5q5cCbdn31uX2edqLvJHxO3?usp=sharing" target="_blank">
+                        <a href="https://drive.google.com/drive/folders/1Iauf2hc7H5q5cCbdn31uX2edqLvJHxO3?usp=sharing" target="_blank" class="btn-action">
                             📁 View CAD Drawings &amp; Project Folder
                         </a>
                     </div>
@@ -1018,14 +1133,14 @@
                 <div class="card-glare"></div>
                 <div class="tilt-card-content">
                     <h3>MEP Technician – B&amp;MEP Engineering Construction Co., Ltd</h3>
-                    <p><em>Hands-on Field Experience</em></p>
+                    <p style="color: var(--amber); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace;">Hands-on Field Experience</p>
                     <p style="margin-top: 0.6rem;">
                         • Executed full installations and testing for HVAC, lighting, and plumbing systems.<br>
                         • Installed specialized safety and low-voltage infrastructure, including CCTV and fire-fighting systems.
                     </p>
 
                     <div style="margin-top: 1.2rem;">
-                        <a href="https://drive.google.com/drive/folders/1jRVgnTwe4oBzhM4AXFsTUW9eRj5opsep?usp=sharing" target="_blank">
+                        <a href="https://drive.google.com/drive/folders/1jRVgnTwe4oBzhM4AXFsTUW9eRj5opsep?usp=sharing" target="_blank" class="btn-action">
                             📁 View Field Work &amp; Documentation
                         </a>
                     </div>
@@ -1034,16 +1149,137 @@
         </section>
 
         <footer>
-            <p>&copy; 2026 CHORN Philip. Built with Three.js 3D &amp; Modern WebGL.</p>
+            <p>&copy; 2026 CHORN Philip. Built with Three.js 3D, WebGL &amp; IoT Interface.</p>
         </footer>
     </div>
 
-    <!-- 3D Scripts -->
+    <!-- Interactive Scripts: 3D Scene + Sonar + Audio Engine + 3D Tilt -->
     <script>
-        // ================= 1. Three.js 3D Background Scene =================
+        // ================= 1. Real-Time System Clock =================
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour12: false, timeZone: 'Asia/Phnom_Penh' });
+            const el = document.getElementById('sys-clock');
+            if (el) el.textContent = timeStr + ' ICT';
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // ================= 2. Web Audio Synthesizer (Sci-Fi Haptic FX) =================
+        let audioCtx = null;
+        let audioEnabled = false;
+
+        function toggleAudioFx() {
+            audioEnabled = !audioEnabled;
+            const btn = document.getElementById('audioToggle');
+            const icon = document.getElementById('audioIcon');
+            const text = document.getElementById('audioText');
+            
+            if (audioEnabled) {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                icon.textContent = '🔊';
+                text.textContent = 'AUDIO: ON';
+                playBeep(880, 0.08, 'sine');
+            } else {
+                icon.textContent = '🔇';
+                text.textContent = 'AUDIO: OFF';
+            }
+        }
+
+        function playBeep(freq, dur, type = 'sine') {
+            if (!audioEnabled || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + dur);
+            } catch(e) {}
+        }
+
+        // ================= 3. Interactive Code/Specs Tab Switcher =================
+        function switchTab(e, tabId) {
+            const parent = e.target.closest('.tab-box');
+            parent.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            e.target.classList.add('active');
+            const target = parent.querySelector('#' + tabId);
+            if (target) target.classList.add('active');
+            playBeep(1200, 0.05, 'triangle');
+        }
+
+        // ================= 4. Live Radar Canvas Simulator =================
+        const radarCanvas = document.getElementById('radarCanvas');
+        if (radarCanvas) {
+            const ctx = radarCanvas.getContext('2d');
+            let angle = 0;
+            let sweepDir = 1;
+
+            function drawRadar() {
+                ctx.fillStyle = 'rgba(4, 8, 5, 0.15)';
+                ctx.fillRect(0, 0, 130, 130);
+
+                const cx = 65, cy = 65, r = 58;
+
+                // Rings
+                ctx.strokeStyle = 'rgba(0, 255, 136, 0.25)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.arc(cx, cy, r * 0.66, 0, Math.PI * 2);
+                ctx.arc(cx, cy, r * 0.33, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Crosshairs
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - r); ctx.lineTo(cx, cy + r);
+                ctx.moveTo(cx - r, cy); ctx.lineTo(cx + r, cy);
+                ctx.stroke();
+
+                // Sweep Beam
+                const rad = angle * (Math.PI / 180);
+                const bx = cx + Math.cos(rad) * r;
+                const by = cy + Math.sin(rad) * r;
+
+                ctx.strokeStyle = '#00ff88';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(bx, by);
+                ctx.stroke();
+
+                // Target Ping Blip
+                if (Math.abs(angle - 135) < 15) {
+                    ctx.fillStyle = '#ffaa5a';
+                    ctx.beginPath();
+                    ctx.arc(cx + 25, cy - 20, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                angle += 2 * sweepDir;
+                if (angle >= 180) sweepDir = -1;
+                if (angle <= 0) sweepDir = 1;
+
+                const angleEl = document.getElementById('radar-angle');
+                const distEl = document.getElementById('radar-dist');
+                if (angleEl) angleEl.textContent = String(Math.floor(angle)).padStart(3, '0') + '°';
+                if (distEl) distEl.textContent = (20 + (Math.sin(angle * 0.05) * 12)).toFixed(1) + ' cm';
+
+                requestAnimationFrame(drawRadar);
+            }
+            drawRadar();
+        }
+
+        // ================= 5. Three.js 3D WebGL Scene =================
         const canvas = document.getElementById('webgl-bg');
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x080504, 0.04);
+        scene.fog = new THREE.FogExp2(0x070403, 0.04);
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(0, 0, 10);
@@ -1052,157 +1288,128 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // Lights
         const ambientLight = new THREE.AmbientLight(0xffeedd, 0.6);
         scene.add(ambientLight);
 
-        const amberLight = new THREE.PointLight(0xffab5e, 4, 30);
+        const amberLight = new THREE.PointLight(0xffaa5a, 4, 30);
         amberLight.position.set(5, 5, 5);
         scene.add(amberLight);
 
-        const goldLight = new THREE.PointLight(0xff7a3d, 3, 25);
-        goldLight.position.set(-5, -5, 2);
-        scene.add(goldLight);
+        // 3D Metallic Core Group
+        const coreGroup = new THREE.Group();
+        scene.add(coreGroup);
 
-        // 3D Metallic Golden Hexagon Core
-        const hexGroup = new THREE.Group();
-        scene.add(hexGroup);
-
-        // Torus Ring representing Circuit Orbit
-        const ringGeo = new THREE.TorusGeometry(3.2, 0.04, 16, 100);
         const ringMat = new THREE.MeshStandardMaterial({
-            color: 0xffab5e,
-            emissive: 0xff7a3d,
-            emissiveIntensity: 0.3,
+            color: 0xffaa5a,
+            emissive: 0xff7536,
+            emissiveIntensity: 0.35,
             metalness: 0.9,
             roughness: 0.2
         });
-        const orbitRing = new THREE.Mesh(ringGeo, ringMat);
-        orbitRing.rotation.x = Math.PI / 3;
-        hexGroup.add(orbitRing);
 
-        // Secondary Ring
-        const ringGeo2 = new THREE.TorusGeometry(2.4, 0.03, 16, 80);
-        const orbitRing2 = new THREE.Mesh(ringGeo2, ringMat);
-        orbitRing2.rotation.y = Math.PI / 4;
-        hexGroup.add(orbitRing2);
+        const ring1 = new THREE.Mesh(new THREE.TorusGeometry(3.2, 0.04, 16, 100), ringMat);
+        ring1.rotation.x = Math.PI / 3;
+        coreGroup.add(ring1);
 
-        // 3D Floating Particles / Spark Matrix
-        const particleCount = 700;
-        const particleGeo = new THREE.BufferGeometry();
-        const positions = new Float32Array(particleCount * 3);
-        const scales = new Float32Array(particleCount);
+        const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.4, 0.03, 16, 80), ringMat);
+        ring2.rotation.y = Math.PI / 4;
+        coreGroup.add(ring2);
 
-        for (let i = 0; i < particleCount * 3; i += 3) {
-            positions[i] = (Math.random() - 0.5) * 35;
-            positions[i + 1] = (Math.random() - 0.5) * 35;
-            positions[i + 2] = (Math.random() - 0.5) * 20;
-            scales[i / 3] = Math.random();
+        // 3D Particle Cloud
+        const pCount = 600;
+        const pGeo = new THREE.BufferGeometry();
+        const pPos = new Float32Array(pCount * 3);
+        for (let i = 0; i < pCount * 3; i += 3) {
+            pPos[i] = (Math.random() - 0.5) * 35;
+            pPos[i + 1] = (Math.random() - 0.5) * 35;
+            pPos[i + 2] = (Math.random() - 0.5) * 20;
         }
-
-        particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-        const particleMat = new THREE.PointsMaterial({
-            color: 0xffab5e,
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+        const pMat = new THREE.PointsMaterial({
+            color: 0xffaa5a,
             size: 0.07,
             transparent: true,
             opacity: 0.75,
             blending: THREE.AdditiveBlending
         });
+        const particles = new THREE.Points(pGeo, pMat);
+        scene.add(particles);
 
-        const particleCloud = new THREE.Points(particleGeo, particleMat);
-        scene.add(particleCloud);
-
-        // Mouse Parallax & Dynamic Light Movement
         let mouseX = 0, mouseY = 0;
         let targetX = 0, targetY = 0;
-
         window.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
             mouseY = -(e.clientY / window.innerHeight - 0.5) * 2;
         });
 
-        // Scroll Parallax for 3D Camera Depth
         let scrollY = 0;
-        window.addEventListener('scroll', () => {
-            scrollY = window.scrollY;
-        });
+        window.addEventListener('scroll', () => { scrollY = window.scrollY; });
 
-        // Resize Listener
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // Animation Loop
         const clock = new THREE.Clock();
-        function animate() {
-            requestAnimationFrame(animate);
+        function animate3D() {
+            requestAnimationFrame(animate3D);
             const time = clock.getElapsedTime();
 
             targetX += (mouseX - targetX) * 0.05;
             targetY += (mouseY - targetY) * 0.05;
 
-            // Rotate Hex Circuit group
-            hexGroup.rotation.y = time * 0.15;
-            hexGroup.rotation.x = Math.sin(time * 0.2) * 0.2;
-            hexGroup.position.x = 2.5 + targetX * 0.8;
-            hexGroup.position.y = -scrollY * 0.003 + targetY * 0.5;
+            coreGroup.rotation.y = time * 0.15;
+            coreGroup.rotation.x = Math.sin(time * 0.2) * 0.2;
+            coreGroup.position.x = 2.5 + targetX * 0.8;
+            coreGroup.position.y = -scrollY * 0.003 + targetY * 0.5;
 
-            // Rotate Particles
-            particleCloud.rotation.y = time * 0.03;
-            particleCloud.rotation.x = time * 0.02;
+            particles.rotation.y = time * 0.03;
 
-            // Camera subtle lag
             camera.position.x = targetX * 0.5;
             camera.position.y = -scrollY * 0.002 + targetY * 0.5;
             camera.lookAt(0, -scrollY * 0.002, 0);
 
-            // Move Light with cursor
             amberLight.position.x = targetX * 6;
             amberLight.position.y = targetY * 6 + 2;
 
             renderer.render(scene, camera);
         }
-        animate();
+        animate3D();
 
-        // ================= 2. 3D Card Tilt Physics =================
+        // ================= 6. 3D Card Tilt Physics =================
         const tiltCards = document.querySelectorAll('.tilt-card');
         tiltCards.forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
-
-                const rotateX = ((y - centerY) / centerY) * -12;
-                const rotateY = ((x - centerX) / centerX) * 12;
+                const rotateX = ((y - centerY) / centerY) * -10;
+                const rotateY = ((x - centerX) / centerX) * 10;
 
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
                 card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
                 card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
             });
 
+            card.addEventListener('mouseenter', () => playBeep(600, 0.03, 'sine'));
             card.addEventListener('mouseleave', () => {
                 card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
             });
         });
 
-        // ================= 3. Scroll Reveal Observer =================
+        // ================= 7. Scroll Reveal =================
         const sections = document.querySelectorAll('section');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('visible');
             });
         }, { threshold: 0.12 });
         sections.forEach(sec => observer.observe(sec));
 
-        // ================= 4. Intro Reveal Sequence =================
+        // ================= 8. Intro Sequence =================
         const intro = document.getElementById('intro');
         const introSkip = document.getElementById('introSkip');
 
