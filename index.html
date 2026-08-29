@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>CHORN Philip — 3D IoT & Automation Engineer</title>
+    <title>CHORN Philip — IoT & Automation Engineer</title>
 
     <link rel="icon" type="image/png" href="ph logo.png">
 
@@ -12,9 +12,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Koulen&display=swap" rel="stylesheet">
 
-    <!-- Three.js + GLTFLoader for 3D Bones Phoenix Model -->
+    <!-- Three.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <style>
         :root {
@@ -29,7 +28,6 @@
             --amber-deep: #ff7536;
             --cyan-accent: #00f0ff;
             --green-active: #00ff88;
-            --gold-phoenix: #ffd700;
         }
 
         * {
@@ -67,7 +65,7 @@
             display: block;
         }
 
-        /* Ambient Cyber Grid Overlay */
+        /* Ambient Cyber Grid */
         body::before {
             content: "";
             position: fixed;
@@ -419,8 +417,8 @@
         }
 
         h2 span.title-text::before {
-            content: "🔥";
-            font-size: 1.1rem;
+            content: "⚡";
+            color: var(--amber);
         }
 
         h2 span.sec-code {
@@ -663,7 +661,7 @@
             margin-top: 1rem;
         }
 
-        /* ================= BULLETPROOF INTRO (Phoenix Theme) ================= */
+        /* ================= BULLETPROOF INTRO ================= */
         #intro {
             position: fixed;
             inset: 0;
@@ -697,18 +695,6 @@
         }
 
         .intro-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-
-        .intro-phoenix-ring {
-            position: absolute;
-            inset: -15%;
-            pointer-events: none;
-            animation: phoenixSpin 6s linear infinite;
-        }
-
-        @keyframes phoenixSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
 
         .shard {
             fill: none;
@@ -769,7 +755,7 @@
 </head>
 <body>
 
-    <!-- 3D Three.js WebGL Scene with 3D Phoenix Model -->
+    <!-- 3D Three.js WebGL Interactive Scene -->
     <canvas id="webgl-bg"></canvas>
 
     <!-- Floating Bubble Category Navigation -->
@@ -784,9 +770,9 @@
     <!-- Floating 3D Controller Pill -->
     <div class="controller-pill">
         <button class="ctrl-btn" onclick="triggerSparkSurge()">⚡ Spark Burst</button>
-        <button class="ctrl-btn" onclick="morphCoreShape()">🔷 Morph 3D Core</button>
+        <button class="ctrl-btn" onclick="morphCoreShape()">🔄 Switch 3D Object</button>
         <button class="ctrl-btn" id="wfBtn" onclick="toggle3DWireframe()">🌐 Wireframe</button>
-        <button class="ctrl-btn" onclick="boostPhoenixSpeed()">🦅 Phoenix Blaze</button>
+        <button class="ctrl-btn" onclick="scatterDebris()">💫 Orbit Scatter</button>
     </div>
 
     <!-- Intro Reveal Screen -->
@@ -794,12 +780,6 @@
         <button class="intro-skip" id="introSkip" type="button" onclick="dismissIntro()">SKIP &gt;&gt;</button>
 
         <div class="intro-stage">
-            <!-- Radiant Golden Phoenix Halo -->
-            <svg class="intro-phoenix-ring" viewBox="0 0 400 400">
-                <circle cx="200" cy="200" r="140" fill="none" stroke="url(#shardGradient)" stroke-width="2" stroke-dasharray="14 8" opacity="0.6"/>
-                <circle cx="200" cy="200" r="160" fill="none" stroke="#ffd700" stroke-width="1.5" stroke-dasharray="6 18" opacity="0.8"/>
-            </svg>
-
             <svg viewBox="0 0 400 400">
                 <defs>
                     <linearGradient id="shardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -819,7 +799,7 @@
 
         <div class="intro-text">
             <h1 style="font-size: 1.8rem;">CHORN PHILIP <span class="khmer">ចន ហ្វីលីប</span></h1>
-            <p style="color: var(--amber); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 0.4rem;">🦅 3D PHOENIX FLIGHT READY — [TAP TO ENTER]</p>
+            <p style="color: var(--amber); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 0.4rem;">⚡ 3D ENGINEERING SCENE READY — [TAP TO ENTER]</p>
         </div>
     </div>
 
@@ -841,7 +821,7 @@
                 </div>
             </div>
             <div style="color: var(--amber); font-size: 0.72rem;">
-                <span>🦅 3D PHOENIX LIVE</span>
+                <span id="model-label">⚙️ 3D TECH ACTIVE</span>
             </div>
         </div>
 
@@ -1155,7 +1135,7 @@ float distance = (duration * 0.0343) / 2.0; // cm
         </section>
 
         <footer>
-            <p>&copy; 2026 CHORN Philip. Interactive 3D WebGL Portfolio with Flying Phoenix Engine.</p>
+            <p>&copy; 2026 CHORN Philip. Interactive 3D WebGL Portfolio.</p>
         </footer>
     </div>
 
@@ -1210,14 +1190,23 @@ float distance = (duration * 0.0343) / 2.0; // cm
             }, { passive: true });
         } catch(e) {}
 
-        // ================= 4. Three.js 3D Engine + REAL 3D PHOENIX MODEL LOADER =================
+        // ================= 4. RICH 3D THREE.JS TECH & ROBOTICS OBJECTS =================
         let scene, camera, renderer, coreGroup, shapes = [], currentShapeIdx = 0, isWireframe = false;
-        let phoenixGroup, phoenixMixer = null, phoenixSpeedMult = 1.0;
-        let particles, amberLight;
+        let ambientDebris = [], debrisVortex = 1.0;
+        let particles, amberLight, cyanLight;
 
-        window.boostPhoenixSpeed = function() {
-            phoenixSpeedMult = 2.5;
-            setTimeout(() => { phoenixSpeedMult = 1.0; }, 3500);
+        const modelNames = [
+            '💻 3D MICROCONTROLLER IC',
+            '⚙️ 3D INDUSTRIAL GEAR',
+            '🚁 3D DRONE ROTOR',
+            '📡 3D SONAR ARRAY',
+            '🔷 3D PH GYROSCOPE',
+            '🌀 3D QUANTUM CORE'
+        ];
+
+        window.scatterDebris = function() {
+            debrisVortex = 3.5;
+            setTimeout(() => { debrisVortex = 1.0; }, 3000);
         };
 
         try {
@@ -1232,21 +1221,25 @@ float distance = (duration * 0.0343) / 2.0; // cm
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-            const ambientLight = new THREE.AmbientLight(0xffeedd, 0.9);
+            const ambientLight = new THREE.AmbientLight(0xffeedd, 0.85);
             scene.add(ambientLight);
 
-            amberLight = new THREE.PointLight(0xffaa5a, 5, 35);
-            amberLight.position.set(0, 3, 5);
+            amberLight = new THREE.PointLight(0xffaa5a, 6, 35);
+            amberLight.position.set(4, 4, 6);
             scene.add(amberLight);
 
-            // Core Group (3D Monogram Ring)
+            cyanLight = new THREE.PointLight(0x00f0ff, 4, 25);
+            cyanLight.position.set(-5, -4, 4);
+            scene.add(cyanLight);
+
+            // Core Group
             coreGroup = new THREE.Group();
             scene.add(coreGroup);
 
             function updateCorePosition() {
                 if (window.innerWidth < 768) {
                     coreGroup.position.set(0, 1.2, 0);
-                    coreGroup.scale.set(0.75, 0.75, 0.75);
+                    coreGroup.scale.set(0.72, 0.72, 0.72);
                 } else {
                     coreGroup.position.set(2.2, 0, 0);
                     coreGroup.scale.set(1, 1, 1);
@@ -1254,103 +1247,147 @@ float distance = (duration * 0.0343) / 2.0; // cm
             }
             updateCorePosition();
 
-            const solidMat = new THREE.MeshStandardMaterial({
-                color: 0xffaa5a,
-                emissive: 0xff7536,
-                emissiveIntensity: 0.35,
-                metalness: 0.9,
-                roughness: 0.15
+            // Materials
+            const goldMat = new THREE.MeshStandardMaterial({
+                color: 0xffd700,
+                emissive: 0x5a2800,
+                roughness: 0.2,
+                metalness: 0.95
             });
 
-            const geo1 = new THREE.TorusGeometry(3.0, 0.05, 16, 80);
-            const geo2 = new THREE.TorusKnotGeometry(1.6, 0.35, 100, 16);
-            const geo3 = new THREE.IcosahedronGeometry(2.0, 2);
+            const chipBodyMat = new THREE.MeshStandardMaterial({
+                color: 0x181412,
+                emissive: 0x110a05,
+                roughness: 0.35,
+                metalness: 0.8
+            });
 
-            const mesh1 = new THREE.Mesh(geo1, solidMat);
-            const mesh2 = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.04, 16, 60), solidMat);
-            mesh2.rotation.y = Math.PI / 4;
-            const group1 = new THREE.Group();
-            group1.add(mesh1);
-            group1.add(mesh2);
+            const cyanGlowMat = new THREE.MeshStandardMaterial({
+                color: 0x00f0ff,
+                emissive: 0x0088aa,
+                emissiveIntensity: 0.6,
+                roughness: 0.2,
+                metalness: 0.8
+            });
 
-            shapes = [group1, new THREE.Mesh(geo2, solidMat), new THREE.Mesh(geo3, solidMat)];
+            // ---------------- OBJECT 1: 3D Microcontroller IC Chip (QFP-32) ----------------
+            const chipGroup = new THREE.Group();
+            const chipBase = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.3, 2.4), chipBodyMat);
+            const chipDie = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.05, 1.4), goldMat);
+            chipDie.position.y = 0.16;
+            chipGroup.add(chipBase);
+            chipGroup.add(chipDie);
+
+            // 32 Gold IC Pins
+            const pinGeo = new THREE.BoxGeometry(0.1, 0.05, 0.45);
+            for (let side = 0; side < 4; side++) {
+                for (let p = -3; p <= 3; p++) {
+                    const pin = new THREE.Mesh(pinGeo, goldMat);
+                    const angle = (side * Math.PI) / 2;
+                    pin.position.set(Math.cos(angle) * 1.35 + (-Math.sin(angle) * p * 0.3), 0, Math.sin(angle) * 1.35 + (Math.cos(angle) * p * 0.3));
+                    pin.rotation.y = angle;
+                    chipGroup.add(pin);
+                }
+            }
+
+            // ---------------- OBJECT 2: 3D Planetary Industrial Gear ----------------
+            const gearGroup = new THREE.Group();
+            const gearHub = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 0.45, 32), goldMat);
+            const gearHole = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.5, 16), chipBodyMat);
+            gearGroup.add(gearHub);
+            gearGroup.add(gearHole);
+
+            // 12 Gear Teeth
+            const toothGeo = new THREE.BoxGeometry(0.38, 0.45, 0.5);
+            for (let i = 0; i < 12; i++) {
+                const tooth = new THREE.Mesh(toothGeo, goldMat);
+                const a = (i / 12) * Math.PI * 2;
+                tooth.position.set(Math.cos(a) * 1.55, 0, Math.sin(a) * 1.55);
+                tooth.rotation.y = -a;
+                gearGroup.add(tooth);
+            }
+
+            // ---------------- OBJECT 3: 3D Drone Rotor & Propeller ----------------
+            const droneGroup = new THREE.Group();
+            const motorHub = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.65, 0.7, 24), chipBodyMat);
+            const propShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.35, 16), goldMat);
+            propShaft.position.y = 0.45;
+            droneGroup.add(motorHub);
+            droneGroup.add(propShaft);
+
+            // 3 Carbon Aerodynamic Blades
+            for (let b = 0; b < 3; b++) {
+                const blade = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.04, 0.38), goldMat);
+                const bAngle = (b / 3) * Math.PI * 2;
+                blade.position.set(Math.cos(bAngle) * 1.0, 0.45, Math.sin(bAngle) * 1.0);
+                blade.rotation.y = -bAngle;
+                blade.rotation.z = 0.18; // Pitch angle
+                droneGroup.add(blade);
+            }
+
+            // ---------------- OBJECT 4: 3D Sonar / Radar Sensor Array ----------------
+            const sonarGroup = new THREE.Group();
+            const dishBase = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 0.4, 0.4, 32), goldMat);
+            const centerTransceiver = new THREE.Mesh(new THREE.SphereGeometry(0.45, 16, 16), cyanGlowMat);
+            centerTransceiver.position.y = 0.3;
+            sonarGroup.add(dishBase);
+            sonarGroup.add(centerTransceiver);
+
+            // Sonar Echo Rings
+            for (let r = 1; r <= 3; r++) {
+                const ring = new THREE.Mesh(new THREE.TorusGeometry(r * 0.65, 0.03, 12, 48), cyanGlowMat);
+                ring.rotation.x = Math.PI / 2;
+                ring.position.y = r * 0.15;
+                sonarGroup.add(ring);
+            }
+
+            // ---------------- OBJECT 5: 3D PH Hexagonal Gyroscope ----------------
+            const gyroGroup = new THREE.Group();
+            const ring1 = new THREE.Mesh(new THREE.TorusGeometry(2.0, 0.05, 16, 60), goldMat);
+            const ring2 = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.04, 16, 60), cyanGlowMat);
+            ring2.rotation.x = Math.PI / 3;
+            const coreSphere = new THREE.Mesh(new THREE.IcosahedronGeometry(0.7, 2), goldMat);
+            gyroGroup.add(ring1);
+            gyroGroup.add(ring2);
+            gyroGroup.add(coreSphere);
+
+            // ---------------- OBJECT 6: 3D Quantum Torus Knot ----------------
+            const knotGroup = new THREE.Group();
+            const knotMesh = new THREE.Mesh(new THREE.TorusKnotGeometry(1.4, 0.32, 100, 16), goldMat);
+            knotGroup.add(knotMesh);
+
+            shapes = [chipGroup, gearGroup, droneGroup, sonarGroup, gyroGroup, knotGroup];
             coreGroup.add(shapes[0]);
 
-            // --- 3D Flying Phoenix System ---
-            phoenixGroup = new THREE.Group();
-            scene.add(phoenixGroup);
+            // ---------------- Ambient Floating 3D Tech Debris ----------------
+            const debrisGeoList = [
+                new THREE.BoxGeometry(0.4, 0.4, 0.4),                // Data cube
+                new THREE.CylinderGeometry(0.2, 0.2, 0.6, 8),        // Capacitor
+                new THREE.TorusGeometry(0.3, 0.06, 8, 16),           // Mini cog
+                new THREE.OctahedronGeometry(0.35)                   // Sensor crystal
+            ];
 
-            // Load User's 3D Bone-Animated Phoenix (.glb / .gltf)
-            if (typeof THREE.GLTFLoader !== 'undefined') {
-                const gltfLoader = new THREE.GLTFLoader();
-                const modelNames = [
-                    'real-time_bones_demo_phoenix_bird.glb',
-                    'real-time_bones_demo_phoenix_bird.gltf',
-                    'real-time_bones_demo_phoenix_bird'
-                ];
+            const debrisCount = 14;
+            for (let d = 0; d < debrisCount; d++) {
+                const randomGeo = debrisGeoList[d % debrisGeoList.length];
+                const dMat = (d % 2 === 0) ? goldMat : cyanGlowMat;
+                const mesh = new THREE.Mesh(randomGeo, dMat);
 
-                function tryLoadPhoenix(index) {
-                    if (index >= modelNames.length) {
-                        createProceduralPhoenix();
-                        return;
-                    }
-                    gltfLoader.load(
-                        modelNames[index],
-                        (gltf) => {
-                            const model = gltf.scene;
-                            // Auto-fit scale
-                            const box = new THREE.Box3().setFromObject(model);
-                            const size = box.getSize(new THREE.Vector3());
-                            const maxDim = Math.max(size.x, size.y, size.z);
-                            const scale = (2.2 / (maxDim || 1));
-                            model.scale.set(scale, scale, scale);
-                            
-                            // Materials enhancement
-                            model.traverse((child) => {
-                                if (child.isMesh && child.material) {
-                                    child.material.emissive = new THREE.Color(0xff7536);
-                                    child.material.emissiveIntensity = 0.25;
-                                }
-                            });
-
-                            phoenixGroup.add(model);
-
-                            // Play bone animations
-                            if (gltf.animations && gltf.animations.length > 0) {
-                                phoenixMixer = new THREE.AnimationMixer(model);
-                                const action = phoenixMixer.clipAction(gltf.animations[0]);
-                                action.play();
-                            }
-                        },
-                        undefined,
-                        () => { tryLoadPhoenix(index + 1); }
-                    );
-                }
-                tryLoadPhoenix(0);
-            } else {
-                createProceduralPhoenix();
+                const angle = (d / debrisCount) * Math.PI * 2;
+                const dist = 3.5 + Math.random() * 2.5;
+                mesh.position.set(Math.cos(angle) * dist, (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 4);
+                mesh.userData = {
+                    angle: angle,
+                    dist: dist,
+                    speed: 0.006 + Math.random() * 0.012,
+                    rotSpeedX: (Math.random() - 0.5) * 0.04,
+                    rotSpeedY: (Math.random() - 0.5) * 0.04
+                };
+                scene.add(mesh);
+                ambientDebris.push(mesh);
             }
 
-            // Procedural Glowing Phoenix Fallback
-            function createProceduralPhoenix() {
-                const birdGeo = new THREE.ConeGeometry(0.5, 2.0, 5);
-                birdGeo.rotateX(Math.PI / 2);
-                const wingGeo = new THREE.BoxGeometry(3.5, 0.08, 1.2);
-                const featherMat = new THREE.MeshStandardMaterial({
-                    color: 0xffd700,
-                    emissive: 0xff5500,
-                    emissiveIntensity: 0.6,
-                    metalness: 0.8,
-                    roughness: 0.2
-                });
-                const birdBody = new THREE.Mesh(birdGeo, featherMat);
-                const birdWings = new THREE.Mesh(wingGeo, featherMat);
-                birdWings.position.set(0, 0.2, 0);
-                phoenixGroup.add(birdBody);
-                phoenixGroup.add(birdWings);
-            }
-
-            // Particles
+            // Background Particle Grid
             const pCount = window.innerWidth < 768 ? 250 : 500;
             const pGeo = new THREE.BufferGeometry();
             const pPos = new Float32Array(pCount * 3);
@@ -1370,7 +1407,7 @@ float distance = (duration * 0.0343) / 2.0; // cm
             particles = new THREE.Points(pGeo, pMat);
             scene.add(particles);
 
-            // Drag / Parallax
+            // Pointer Drag / Parallax
             let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
             let isDragging = false, prevX = 0, prevY = 0, manualRotX = 0, manualRotY = 0;
 
@@ -1405,18 +1442,38 @@ float distance = (duration * 0.0343) / 2.0; // cm
                 updateCorePosition();
             });
 
+            // Switch 3D Object Function
             window.morphCoreShape = function() {
                 try {
                     coreGroup.remove(shapes[currentShapeIdx]);
                     currentShapeIdx = (currentShapeIdx + 1) % shapes.length;
                     coreGroup.add(shapes[currentShapeIdx]);
+
+                    // Animate pop scale
+                    coreGroup.scale.set(0.2, 0.2, 0.2);
+                    const targetScale = window.innerWidth < 768 ? 0.72 : 1.0;
+                    const popTimer = setInterval(() => {
+                        coreGroup.scale.x += (targetScale - coreGroup.scale.x) * 0.2;
+                        coreGroup.scale.y = coreGroup.scale.x;
+                        coreGroup.scale.z = coreGroup.scale.x;
+                        if (Math.abs(coreGroup.scale.x - targetScale) < 0.02) {
+                            coreGroup.scale.set(targetScale, targetScale, targetScale);
+                            clearInterval(popTimer);
+                        }
+                    }, 16);
+
+                    const labelEl = document.getElementById('model-label');
+                    if (labelEl) labelEl.textContent = modelNames[currentShapeIdx];
                 } catch(e) {}
             };
 
+            // Wireframe Toggle
             window.toggle3DWireframe = function() {
                 try {
                     isWireframe = !isWireframe;
-                    solidMat.wireframe = isWireframe;
+                    goldMat.wireframe = isWireframe;
+                    chipBodyMat.wireframe = isWireframe;
+                    cyanGlowMat.wireframe = isWireframe;
                     const btn = document.getElementById('wfBtn');
                     if (btn) {
                         btn.style.background = isWireframe ? 'var(--amber)' : 'rgba(255, 170, 90, 0.12)';
@@ -1425,61 +1482,37 @@ float distance = (duration * 0.0343) / 2.0; // cm
                 } catch(e) {}
             };
 
+            // Spark Surge
             window.triggerSparkSurge = function() {
                 try {
                     if (particles) particles.rotation.y += Math.PI;
-                    if (amberLight) amberLight.intensity = 15;
-                    setTimeout(() => { if (amberLight) amberLight.intensity = 5; }, 400);
+                    if (amberLight) amberLight.intensity = 18;
+                    setTimeout(() => { if (amberLight) amberLight.intensity = 6; }, 400);
                 } catch(e) {}
             };
 
-            // 3D Animation Loop with Phoenix Flight Physics
+            // 3D Animation Loop
             const clock = new THREE.Clock();
-            let flightTime = 0;
-
             function animate3D() {
                 requestAnimationFrame(animate3D);
-                const delta = clock.getDelta();
                 const time = clock.getElapsedTime();
-                flightTime += delta * 0.8 * phoenixSpeedMult;
-
-                if (phoenixMixer) phoenixMixer.update(delta * phoenixSpeedMult);
 
                 targetX += (mouseX - targetX) * 0.05;
                 targetY += (mouseY - targetY) * 0.05;
 
-                // Animate Core
-                coreGroup.rotation.y = time * 0.2 + manualRotY;
-                coreGroup.rotation.x = Math.sin(time * 0.2) * 0.2 + manualRotX;
+                // Rotate Central Object
+                coreGroup.rotation.y = time * 0.25 + manualRotY;
+                coreGroup.rotation.x = Math.sin(time * 0.2) * 0.25 + manualRotX;
                 particles.rotation.y = time * 0.02;
 
-                // 3D Aerodynamic Phoenix Flight Path
-                const rX = window.innerWidth < 768 ? 2.6 : 4.6;
-                const rY = 2.2;
-                const rZ = 2.5;
-
-                const prevPX = phoenixGroup.position.x;
-                const prevPY = phoenixGroup.position.y;
-                const prevPZ = phoenixGroup.position.z;
-
-                const pX = Math.sin(flightTime) * rX;
-                const pY = Math.sin(flightTime * 2.0) * rY + Math.cos(flightTime * 0.5) * 0.6;
-                const pZ = Math.cos(flightTime) * rZ;
-
-                phoenixGroup.position.set(pX, pY, pZ);
-
-                // Compute Velocity Direction for Banking & Turning
-                const velX = pX - prevPX;
-                const velY = pY - prevPY;
-                const velZ = pZ - prevPZ;
-
-                if (Math.hypot(velX, velZ) > 0.001) {
-                    const yaw = Math.atan2(-velX, -velZ);
-                    const pitch = Math.atan2(velY, Math.hypot(velX, velZ));
-                    const bankRoll = Math.sin(flightTime) * 0.5; // Natural wing banking into turns
-
-                    phoenixGroup.rotation.set(pitch, yaw, bankRoll);
-                }
+                // Animate Ambient Floating Debris
+                ambientDebris.forEach(mesh => {
+                    mesh.userData.angle += mesh.userData.speed * debrisVortex;
+                    mesh.position.x = Math.cos(mesh.userData.angle) * mesh.userData.dist;
+                    mesh.position.z = Math.sin(mesh.userData.angle) * mesh.userData.dist;
+                    mesh.rotation.x += mesh.userData.rotSpeedX;
+                    mesh.rotation.y += mesh.userData.rotSpeedY;
+                });
 
                 // Camera follow
                 camera.position.x = targetX * 0.5;
