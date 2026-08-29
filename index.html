@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>CHORN Philip — 3D IoT & Automation Engineer</title>
+    <title>CHORN Philip — IoT & Automation Engineer</title>
 
     <link rel="icon" type="image/png" href="ph logo.png">
 
@@ -12,15 +12,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Koulen&display=swap" rel="stylesheet">
 
-    <!-- Three.js + GSAP -->
+    <!-- Three.js (Optional 3D Engine) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <style>
         :root {
             --bg-dark: #060302;
-            --bg-panel: rgba(18, 12, 9, 0.82);
-            --bg-card: rgba(26, 17, 12, 0.8);
+            --bg-panel: rgba(18, 12, 9, 0.85);
+            --bg-card: rgba(26, 17, 12, 0.82);
             --glass-border: rgba(255, 170, 90, 0.28);
             --text-main: #f5ebe0;
             --text-muted: #c4aa8f;
@@ -29,6 +28,7 @@
             --amber-deep: #ff7536;
             --cyan-accent: #00f0ff;
             --green-active: #00ff88;
+            --gold-dragon: #ffd700;
         }
 
         * {
@@ -48,13 +48,13 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             line-height: 1.6;
-            padding: 0 1rem 5rem;
+            padding: 0 1rem 6rem;
             position: relative;
             overflow-x: hidden;
             min-height: 100vh;
         }
 
-        /* 3D WebGL Canvas Layer */
+        /* 3D WebGL Background Canvas */
         #webgl-bg {
             position: fixed;
             top: 0;
@@ -66,7 +66,19 @@
             display: block;
         }
 
-        /* Subtle Cyber Grid Background */
+        /* Flying Dragon Canvas Overlay */
+        #dragon-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 3;
+            pointer-events: none;
+            display: block;
+        }
+
+        /* Ambient Cyber Grid Overlay */
         body::before {
             content: "";
             position: fixed;
@@ -92,12 +104,69 @@
             max-width: 960px;
             margin: 0 auto;
             position: relative;
-            z-index: 2;
+            z-index: 4;
         }
 
         h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
         .khmer { font-family: 'Koulen', cursive, sans-serif; font-weight: normal; }
+
+        /* ================= FLOATING BUBBLE NAVIGATION ================= */
+        .floating-bubble-nav {
+            position: fixed;
+            top: 1rem;
+            right: 1.2rem;
+            z-index: 80;
+            display: flex;
+            gap: 0.4rem;
+            background: rgba(18, 11, 7, 0.88);
+            border: 1px solid var(--glass-border);
+            padding: 0.35rem 0.6rem;
+            border-radius: 50px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.65), 0 0 15px rgba(255, 140, 66, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .bubble-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: rgba(255, 170, 90, 0.08);
+            border: 1px solid rgba(255, 170, 90, 0.2);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 30px;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.25, 1);
+            white-space: nowrap;
+        }
+
+        .bubble-item:hover, .bubble-item.active {
+            background: linear-gradient(135deg, var(--amber-deep), var(--amber));
+            color: #000;
+            border-color: var(--amber-bright);
+            box-shadow: 0 0 12px rgba(255, 170, 90, 0.6);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 680px) {
+            .floating-bubble-nav {
+                top: auto;
+                bottom: 4.8rem;
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+                max-width: 95vw;
+                overflow-x: auto;
+                padding: 0.3rem 0.5rem;
+            }
+            .bubble-item { font-size: 0.72rem; padding: 0.3rem 0.6rem; }
+        }
 
         /* ================= 3D CONTROLLER FLOATING PILL ================= */
         .controller-pill {
@@ -108,14 +177,14 @@
             z-index: 100;
             display: flex;
             gap: 0.5rem;
-            background: rgba(20, 13, 9, 0.88);
+            background: rgba(20, 13, 9, 0.92);
             border: 1px solid var(--glass-border);
             padding: 0.4rem 0.8rem;
             border-radius: 50px;
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 20px rgba(255, 140, 66, 0.25);
-            max-width: 92vw;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.75), 0 0 20px rgba(255, 140, 66, 0.3);
+            max-width: 94vw;
             overflow-x: auto;
         }
 
@@ -133,14 +202,12 @@
             display: flex;
             align-items: center;
             gap: 0.35rem;
-            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+            transition: all 0.2s;
         }
 
         .ctrl-btn:active, .ctrl-btn:hover {
             background: var(--amber);
             color: #000;
-            transform: scale(1.05);
-            box-shadow: 0 0 15px var(--amber);
         }
 
         /* ================= TOP IOT TELEMETRY BAR ================= */
@@ -150,7 +217,7 @@
             z-index: 50;
             margin-bottom: 1.5rem;
             margin-top: 0.8rem;
-            background: rgba(14, 9, 6, 0.9);
+            background: rgba(14, 9, 6, 0.92);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             backdrop-filter: blur(16px);
@@ -162,6 +229,11 @@
             font-size: 0.75rem;
             font-family: 'JetBrains Mono', monospace;
             box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            margin-right: 320px; /* Space for bubble nav on desktop */
+        }
+
+        @media (max-width: 900px) {
+            .iot-topbar { margin-right: 0; }
         }
 
         .iot-metrics {
@@ -195,11 +267,11 @@
         /* ================= Header ================= */
         header {
             position: relative;
-            padding: 2rem;
+            padding: 2.2rem 2rem;
             background: var(--bg-panel);
             border: 1px solid var(--glass-border);
             border-radius: 18px;
-            margin-bottom: 3rem;
+            margin-bottom: 3.5rem;
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             box-shadow: 0 12px 40px rgba(0,0,0,0.55);
@@ -225,8 +297,8 @@
 
         .brand-logo-frame {
             position: relative;
-            width: 90px;
-            height: 90px;
+            width: 92px;
+            height: 92px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
@@ -335,7 +407,8 @@
         /* ================= Sections ================= */
         section {
             position: relative;
-            margin-bottom: 3.5rem;
+            margin-bottom: 3.8rem;
+            scroll-margin-top: 5rem;
         }
 
         h2 {
@@ -357,8 +430,8 @@
         }
 
         h2 span.title-text::before {
-            content: "⚡";
-            color: var(--amber);
+            content: "🐉";
+            font-size: 1.1rem;
         }
 
         h2 span.sec-code {
@@ -398,9 +471,7 @@
             z-index: 1;
         }
 
-        .tilt-card:hover .card-glare {
-            opacity: 1;
-        }
+        .tilt-card:hover .card-glare { opacity: 1; }
 
         .tilt-card:hover {
             border-color: var(--amber);
@@ -410,7 +481,6 @@
         .tilt-content {
             position: relative;
             z-index: 2;
-            transform: translateZ(30px);
         }
 
         .skill-card h3, .project-card h3, .experience-card h3 {
@@ -444,18 +514,13 @@
             filter: drop-shadow(0 0 14px rgba(255, 140, 66, 0.6));
             animation: cardIconFloat 5s ease-in-out infinite;
             z-index: 4;
-            transform: translateZ(40px);
         }
 
-        .project-icon svg {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
+        .project-icon svg { display: block; width: 100%; height: 100%; }
 
         @keyframes cardIconFloat {
-            0%, 100% { transform: translateZ(40px) translateY(0) rotate(-3deg); }
-            50%      { transform: translateZ(40px) translateY(-10px) rotate(3deg); }
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50%      { transform: translateY(-10px) rotate(3deg); }
         }
 
         /* ================= LIVE RADAR DISPLAY ================= */
@@ -529,10 +594,7 @@
             cursor: pointer;
         }
 
-        .tab-btn.active {
-            color: var(--amber);
-            background: rgba(255, 140, 66, 0.15);
-        }
+        .tab-btn.active { color: var(--amber); background: rgba(255, 140, 66, 0.15); }
 
         .tab-content {
             display: none;
@@ -579,12 +641,6 @@
             border-radius: 999px;
             background: linear-gradient(90deg, var(--amber-deep), var(--amber), #ffe4c2);
             box-shadow: 0 0 15px rgba(255, 140, 66, 0.8);
-            animation: pulseGlow 2.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes pulseGlow {
-            from { filter: brightness(1); }
-            to { filter: brightness(1.3); }
         }
 
         .funding-qr {
@@ -604,10 +660,7 @@
             border-radius: 8px;
             flex-shrink: 0;
             border: 1px solid var(--glass-border);
-            transition: transform 0.3s ease;
         }
-
-        .funding-qr img:hover { transform: scale(1.06); }
 
         .tech-stack {
             display: inline-block;
@@ -621,7 +674,7 @@
             margin-top: 1rem;
         }
 
-        /* ================= INTRO ================= */
+        /* ================= BULLETPROOF INTRO (Chinese Dragon Loading) ================= */
         #intro {
             position: fixed;
             inset: 0;
@@ -634,15 +687,40 @@
             overflow: hidden;
             cursor: pointer;
             touch-action: manipulation;
+            -webkit-animation: pureCssAutoDismiss 0.6s ease 3.4s forwards;
+            animation: pureCssAutoDismiss 0.6s ease 3.4s forwards;
+        }
+
+        @-webkit-keyframes pureCssAutoDismiss {
+            0% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; pointer-events: none; }
+        }
+
+        @keyframes pureCssAutoDismiss {
+            0% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; pointer-events: none; }
         }
 
         .intro-stage {
             position: relative;
-            width: min(65vw, 280px);
-            height: min(65vw, 280px);
+            width: min(70vw, 300px);
+            height: min(70vw, 300px);
         }
 
         .intro-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+        /* Animated Chinese Dragon Flying in Intro */
+        .intro-dragon-path {
+            position: absolute;
+            inset: -20%;
+            pointer-events: none;
+            animation: dragonFlyLoop 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes dragonFlyLoop {
+            0% { transform: rotate(-5deg) scale(0.95); }
+            100% { transform: rotate(5deg) scale(1.05); }
+        }
 
         .shard {
             fill: none;
@@ -668,20 +746,20 @@
             position: absolute;
             top: 1.5rem;
             right: 1.5rem;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.12);
             border: 1px solid var(--glass-border);
             color: var(--amber);
-            padding: 0.4rem 0.9rem;
+            padding: 0.45rem 1rem;
             border-radius: 8px;
             font-family: 'JetBrains Mono', monospace;
             cursor: pointer;
         }
 
         #intro.hide {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-            pointer-events: none;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
         footer {
@@ -706,18 +784,51 @@
     <!-- 3D Three.js WebGL Interactive Background -->
     <canvas id="webgl-bg"></canvas>
 
+    <!-- Flying Chinese Dragon Interactive Canvas Layer -->
+    <canvas id="dragon-canvas"></canvas>
+
+    <!-- Floating Bubble Category Navigation Menu -->
+    <nav class="floating-bubble-nav" id="bubbleNav">
+        <a href="#header-section" class="bubble-item active">🏠 Home</a>
+        <a href="#skills-section" class="bubble-item">⚡ Skills</a>
+        <a href="#projects-section" class="bubble-item">🚀 Projects</a>
+        <a href="#experience-section" class="bubble-item">💼 Experience</a>
+        <a href="CHORN_PHILIP_CV.pdf" target="_blank" class="bubble-item" style="color:var(--amber-bright);">📄 CV</a>
+    </nav>
+
     <!-- Floating 3D Controller Pill -->
     <div class="controller-pill">
         <button class="ctrl-btn" onclick="triggerSparkSurge()">⚡ Spark Burst</button>
         <button class="ctrl-btn" onclick="morphCoreShape()">🔷 Morph 3D Core</button>
         <button class="ctrl-btn" id="wfBtn" onclick="toggle3DWireframe()">🌐 Wireframe</button>
+        <button class="ctrl-btn" onclick="boostDragonSpeed()">🐉 Dragon Rush</button>
     </div>
 
-    <!-- Intro Reveal Screen -->
-    <div id="intro" role="presentation" aria-hidden="true">
-        <button class="intro-skip" id="introSkip" type="button">SKIP &gt;&gt;</button>
+    <!-- Intro Reveal Screen with Flying Chinese Dragon -->
+    <div id="intro" role="presentation" aria-hidden="true" onclick="dismissIntro()" ontouchstart="dismissIntro()">
+        <button class="intro-skip" id="introSkip" type="button" onclick="dismissIntro()">SKIP &gt;&gt;</button>
 
         <div class="intro-stage">
+            <!-- Flying Golden Chinese Dragon SVG Silhouette circling the logo -->
+            <svg class="intro-dragon-path" viewBox="0 0 500 500">
+                <defs>
+                    <linearGradient id="dragonGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#ffd700"/>
+                        <stop offset="50%" stop-color="#ff7536"/>
+                        <stop offset="100%" stop-color="#ffaa5a"/>
+                    </linearGradient>
+                </defs>
+                <!-- Serpentine Coiled Dragon Body -->
+                <path d="M 250,40 C 390,40 460,160 440,280 C 420,380 320,460 210,440 C 100,420 40,320 60,200 C 80,90 180,60 250,110 C 310,150 340,240 310,310 C 280,360 210,360 170,320 C 140,280 160,220 210,200 C 260,190 280,240 250,260" 
+                      fill="none" stroke="url(#dragonGoldGrad)" stroke-width="5" stroke-linecap="round" stroke-dasharray="12 6" opacity="0.85">
+                    <animateTransform attributeName="transform" type="rotate" from="0 250 250" to="360 250 250" dur="8s" repeatCount="indefinite"/>
+                </path>
+                <!-- Dragon Whiskers & Fire Orbs -->
+                <circle cx="250" cy="40" r="7" fill="#ffd700" filter="drop-shadow(0 0 10px #ffd700)"/>
+                <circle cx="440" cy="280" r="5" fill="#ff7536"/>
+                <circle cx="210" cy="440" r="6" fill="#ffaa5a"/>
+            </svg>
+
             <svg viewBox="0 0 400 400">
                 <defs>
                     <linearGradient id="shardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -737,7 +848,7 @@
 
         <div class="intro-text">
             <h1 style="font-size: 1.8rem;">CHORN PHILIP <span class="khmer">ចន ហ្វីលីប</span></h1>
-            <p style="color: var(--amber); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 0.4rem;">[TAP ANYWHERE TO ENTER 3D MODE]</p>
+            <p style="color: var(--amber); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 0.4rem;">🐉 DRAGON TELEMETRY READY — [TAP ANYWHERE]</p>
         </div>
     </div>
 
@@ -759,12 +870,12 @@
                 </div>
             </div>
             <div style="color: var(--amber); font-size: 0.72rem;">
-                <span>✨ 3D INTERACTIVE</span>
+                <span>🐉 DRAGON MODE</span>
             </div>
         </div>
 
         <!-- Header Profile -->
-        <header>
+        <header id="header-section">
             <div class="header-layout">
                 <div class="brand-logo-frame">
                     <img src="ph logo.png" alt="PH logo" class="brand-logo">
@@ -985,7 +1096,7 @@ float distance = (duration * 0.0343) / 2.0; // cm
                             </svg>
                         </span>
                         <h3>🤖 Pookie Mini Quadruped Robot</h3>
-                        <p>Built an 8-DOF walking quadruped featuring inverse kinematics gait routines, captive Wi-Fi web-portal control, and expressive animated OLED facial status screen.(In the process and developing local AI to control the robot)</p>
+                        <p>Built an 8-DOF walking quadruped featuring inverse kinematics gait routines, captive Wi-Fi web-portal control, and expressive animated OLED facial status screen (In development: on-device local AI control).</p>
 
                         <div style="margin-top: 1.1rem;">
                             <a href="https://drive.google.com/drive/folders/1LS8MxVf53c4X_F-wFqlXthylPBTje6_q?usp=sharing" target="_blank" class="btn-action">
@@ -1073,322 +1184,488 @@ float distance = (duration * 0.0343) / 2.0; // cm
         </section>
 
         <footer>
-            <p>&copy; 2026 CHORN Philip. Interactive 3D WebGL Portfolio.</p>
+            <p>&copy; 2026 CHORN Philip. Interactive 3D WebGL Portfolio with Flying Dragon Engine.</p>
         </footer>
     </div>
 
-    <!-- 3D Scripts -->
+    <!-- Scripts -->
     <script>
-        // ================= 1. Real-Time Clock =================
+        // ================= 1. Crash-Proof UTC+7 Clock =================
         function updateClock() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-US', { hour12: false, timeZone: 'Asia/Phnom_Penh' });
-            const el = document.getElementById('sys-clock');
-            if (el) el.textContent = timeStr + ' ICT';
+            try {
+                const now = new Date();
+                const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+                const cambodia = new Date(utc + (3600000 * 7));
+                const h = String(cambodia.getHours()).padStart(2, '0');
+                const m = String(cambodia.getMinutes()).padStart(2, '0');
+                const s = String(cambodia.getSeconds()).padStart(2, '0');
+                const el = document.getElementById('sys-clock');
+                if (el) el.textContent = `${h}:${m}:${s} ICT`;
+            } catch(e) {}
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // ================= 2. Tab Switcher =================
-        function switchTab(e, tabId) {
-            const parent = e.target.closest('.tab-box');
-            parent.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            e.target.classList.add('active');
-            const target = parent.querySelector('#' + tabId);
-            if (target) target.classList.add('active');
-        }
-
-        // ================= 3. Live Radar Simulation =================
-        const radarCanvas = document.getElementById('radarCanvas');
-        if (radarCanvas) {
-            const ctx = radarCanvas.getContext('2d');
-            let angle = 0;
-            let sweepDir = 1;
-
-            function drawRadar() {
-                ctx.fillStyle = 'rgba(4, 8, 5, 0.2)';
-                ctx.fillRect(0, 0, 115, 115);
-
-                const cx = 57.5, cy = 57.5, r = 50;
-
-                ctx.strokeStyle = 'rgba(0, 255, 136, 0.3)';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.arc(cx, cy, r, 0, Math.PI * 2);
-                ctx.arc(cx, cy, r * 0.6, 0, Math.PI * 2);
-                ctx.stroke();
-
-                const rad = angle * (Math.PI / 180);
-                const bx = cx + Math.cos(rad) * r;
-                const by = cy + Math.sin(rad) * r;
-
-                ctx.strokeStyle = '#00ff88';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(cx, cy);
-                ctx.lineTo(bx, by);
-                ctx.stroke();
-
-                if (Math.abs(angle - 130) < 20) {
-                    ctx.fillStyle = '#ffaa5a';
-                    ctx.beginPath();
-                    ctx.arc(cx + 22, cy - 18, 3, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                angle += 2.5 * sweepDir;
-                if (angle >= 180) sweepDir = -1;
-                if (angle <= 0) sweepDir = 1;
-
-                const angleEl = document.getElementById('radar-angle');
-                const distEl = document.getElementById('radar-dist');
-                if (angleEl) angleEl.textContent = String(Math.floor(angle)).padStart(3, '0') + '°';
-                if (distEl) distEl.textContent = (20 + (Math.sin(angle * 0.05) * 10)).toFixed(1) + ' cm';
-
-                requestAnimationFrame(drawRadar);
-            }
-            drawRadar();
-        }
-
-        // ================= 4. High-Performance 3D WebGL Engine =================
-        let scene, camera, renderer, coreGroup, particles, amberLight;
-        let shapes = [], currentShapeIdx = 0, isWireframe = false;
-        let pPositions;
-
-        try {
-            const canvas = document.getElementById('webgl-bg');
-            scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x060302, 0.038);
-
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0, 10);
-
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-
-            const ambientLight = new THREE.AmbientLight(0xffeedd, 0.7);
-            scene.add(ambientLight);
-
-            amberLight = new THREE.PointLight(0xffaa5a, 5, 35);
-            amberLight.position.set(0, 3, 5);
-            scene.add(amberLight);
-
-            coreGroup = new THREE.Group();
-            scene.add(coreGroup);
-
-            function updateCorePosition() {
-                if (window.innerWidth < 768) {
-                    coreGroup.position.set(0, 1.2, 0);
-                    coreGroup.scale.set(0.75, 0.75, 0.75);
-                } else {
-                    coreGroup.position.set(2.2, 0, 0);
-                    coreGroup.scale.set(1, 1, 1);
-                }
-            }
-            updateCorePosition();
-
-            // Materials
-            const solidMat = new THREE.MeshStandardMaterial({
-                color: 0xffaa5a,
-                emissive: 0xff7536,
-                emissiveIntensity: 0.35,
-                metalness: 0.9,
-                roughness: 0.15
-            });
-
-            // 3 Shapes: 1. Hex Ring, 2. Torus Knot, 3. Quantum Icosahedron
-            const geo1 = new THREE.TorusGeometry(3.0, 0.05, 16, 80);
-            const geo2 = new THREE.TorusKnotGeometry(1.6, 0.35, 100, 16);
-            const geo3 = new THREE.IcosahedronGeometry(2.0, 2);
-
-            const mesh1 = new THREE.Mesh(geo1, solidMat);
-            const mesh2 = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.04, 16, 60), solidMat);
-            mesh2.rotation.y = Math.PI / 4;
-            const group1 = new THREE.Group();
-            group1.add(mesh1);
-            group1.add(mesh2);
-
-            const meshKnot = new THREE.Mesh(geo2, solidMat);
-            const meshIco = new THREE.Mesh(geo3, solidMat);
-
-            shapes = [group1, meshKnot, meshIco];
-            coreGroup.add(shapes[0]);
-
-            // Particles
-            const pCount = window.innerWidth < 768 ? 300 : 600;
-            const pGeo = new THREE.BufferGeometry();
-            pPositions = new Float32Array(pCount * 3);
-            for (let i = 0; i < pCount * 3; i += 3) {
-                pPositions[i] = (Math.random() - 0.5) * 35;
-                pPositions[i + 1] = (Math.random() - 0.5) * 35;
-                pPositions[i + 2] = (Math.random() - 0.5) * 25;
-            }
-            pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
-            const pMat = new THREE.PointsMaterial({
-                color: 0xffaa5a,
-                size: 0.08,
-                transparent: true,
-                opacity: 0.75,
-                blending: THREE.AdditiveBlending
-            });
-            particles = new THREE.Points(pGeo, pMat);
-            scene.add(particles);
-
-            // Touch Drag / Mouse Parallax
-            let mouseX = 0, mouseY = 0;
-            let targetX = 0, targetY = 0;
-            let isDragging = false, prevX = 0, prevY = 0;
-            let manualRotX = 0, manualRotY = 0;
-
-            function onPointerDown(x, y) {
-                isDragging = true;
-                prevX = x;
-                prevY = y;
-            }
-            function onPointerMove(x, y) {
-                mouseX = (x / window.innerWidth - 0.5) * 2;
-                mouseY = -(y / window.innerHeight - 0.5) * 2;
-
-                if (isDragging) {
-                    const deltaX = x - prevX;
-                    const deltaY = y - prevY;
-                    manualRotY += deltaX * 0.006;
-                    manualRotX += deltaY * 0.006;
-                    prevX = x;
-                    prevY = y;
-                }
-            }
-            function onPointerUp() { isDragging = false; }
-
-            window.addEventListener('mousedown', (e) => onPointerDown(e.clientX, e.clientY));
-            window.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY));
-            window.addEventListener('mouseup', onPointerUp);
-
-            window.addEventListener('touchstart', (e) => {
-                if (e.touches.length > 0) onPointerDown(e.touches[0].clientX, e.touches[0].clientY);
-            }, { passive: true });
-            window.addEventListener('touchmove', (e) => {
-                if (e.touches.length > 0) onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
-            }, { passive: true });
-            window.addEventListener('touchend', onPointerUp);
-
-            // Gyroscope Device Orientation Support (iPhone / Android)
-            if (window.DeviceOrientationEvent) {
-                window.addEventListener('deviceorientation', (e) => {
-                    if (e.gamma !== null && e.beta !== null) {
-                        mouseX = (e.gamma / 45);
-                        mouseY = ((e.beta - 45) / 45);
-                    }
-                }, true);
-            }
-
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                updateCorePosition();
-            });
-
-            // 3D Morph & Wireframe Controls
-            window.morphCoreShape = function() {
-                coreGroup.remove(shapes[currentShapeIdx]);
-                currentShapeIdx = (currentShapeIdx + 1) % shapes.length;
-                coreGroup.add(shapes[currentShapeIdx]);
-                gsap.fromTo(coreGroup.scale, { x: 0, y: 0, z: 0 }, { x: window.innerWidth < 768 ? 0.75 : 1, y: window.innerWidth < 768 ? 0.75 : 1, z: window.innerWidth < 768 ? 0.75 : 1, duration: 0.6, ease: "back.out(1.7)" });
-            };
-
-            window.toggle3DWireframe = function() {
-                isWireframe = !isWireframe;
-                solidMat.wireframe = isWireframe;
-                document.getElementById('wfBtn').style.background = isWireframe ? 'var(--amber)' : 'rgba(255, 170, 90, 0.12)';
-                document.getElementById('wfBtn').style.color = isWireframe ? '#000' : 'var(--amber)';
-            };
-
-            window.triggerSparkSurge = function() {
-                gsap.to(particles.rotation, { y: particles.rotation.y + Math.PI * 2, duration: 1.2, ease: "power3.out" });
-                gsap.to(amberLight, { intensity: 15, duration: 0.3, yoyo: true, repeat: 1 });
-            };
-
-            const clock = new THREE.Clock();
-            function animate3D() {
-                requestAnimationFrame(animate3D);
-                const time = clock.getElapsedTime();
-
-                targetX += (mouseX - targetX) * 0.05;
-                targetY += (mouseY - targetY) * 0.05;
-
-                coreGroup.rotation.y = time * 0.2 + manualRotY;
-                coreGroup.rotation.x = Math.sin(time * 0.2) * 0.2 + manualRotX;
-                particles.rotation.y = time * 0.02;
-
-                camera.position.x = targetX * 0.5;
-                camera.position.y = targetY * 0.5;
-                camera.lookAt(0, 0, 0);
-
-                renderer.render(scene, camera);
-            }
-            animate3D();
-        } catch(err) {
-            console.warn('WebGL setup:', err);
-        }
-
-        // ================= 5. 3D Card Tilt Physics =================
-        const tiltCards = document.querySelectorAll('.tilt-card');
-        tiltCards.forEach(card => {
-            function handleCardTilt(x, y) {
-                const rect = card.getBoundingClientRect();
-                const cardX = x - rect.left;
-                const cardY = y - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-
-                const rotateX = ((cardY - centerY) / centerY) * -12;
-                const rotateY = ((cardX - centerX) / centerX) * 12;
-
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(12px)`;
-                card.style.setProperty('--mouse-x', `${(cardX / rect.width) * 100}%`);
-                card.style.setProperty('--mouse-y', `${(cardY / rect.height) * 100}%`);
-            }
-
-            card.addEventListener('mousemove', (e) => handleCardTilt(e.clientX, e.clientY));
-            card.addEventListener('touchmove', (e) => {
-                if (e.touches.length > 0) handleCardTilt(e.touches[0].clientX, e.touches[0].clientY);
-            }, { passive: true });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
-            });
-            card.addEventListener('touchend', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
-            });
-        });
-
-        // ================= 6. Intro Dismissal =================
-        const intro = document.getElementById('intro');
-        const introSkip = document.getElementById('introSkip');
-
-        function finishIntro() {
+        // ================= 2. Guaranteed Intro Dismissal =================
+        function dismissIntro() {
+            const intro = document.getElementById('intro');
             if (intro) {
                 intro.classList.add('hide');
-                setTimeout(() => intro.remove(), 600);
+                setTimeout(() => { if (intro.parentNode) intro.parentNode.removeChild(intro); }, 400);
             }
         }
+        setTimeout(dismissIntro, 3200);
 
-        const introTimer = setTimeout(finishIntro, 3500);
-        if (intro) {
-            intro.addEventListener('click', () => { clearTimeout(introTimer); finishIntro(); });
-            intro.addEventListener('touchstart', () => { clearTimeout(introTimer); finishIntro(); }, { passive: true });
+        // ================= 3. Floating Bubble Navigation Active Tracker =================
+        try {
+            const sections = document.querySelectorAll('header, section');
+            const navLinks = document.querySelectorAll('.floating-bubble-nav a');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 120;
+                    if (window.scrollY >= sectionTop) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }, { passive: true });
+        } catch(e) {}
+
+        // ================= 4. Flying Chinese Dragon Real-Time Physics Engine =================
+        let dragonSpeedMult = 1.0;
+        window.boostDragonSpeed = function() {
+            dragonSpeedMult = 2.8;
+            setTimeout(() => { dragonSpeedMult = 1.0; }, 4000);
+        };
+
+        try {
+            const dCanvas = document.getElementById('dragon-canvas');
+            if (dCanvas) {
+                const ctx = dCanvas.getContext('2d');
+                function resizeDragonCanvas() {
+                    dCanvas.width = window.innerWidth;
+                    dCanvas.height = window.innerHeight;
+                }
+                window.addEventListener('resize', resizeDragonCanvas);
+                resizeDragonCanvas();
+
+                // Serpentine Dragon Kinematics (Head + Body Joints)
+                const numSegments = 22;
+                const segLength = 14;
+                const segments = [];
+                let headX = window.innerWidth * 0.5;
+                let headY = window.innerHeight * 0.4;
+                let t = 0;
+
+                for (let i = 0; i < numSegments; i++) {
+                    segments.push({ x: headX - i * segLength, y: headY, angle: 0 });
+                }
+
+                // Fire Embers trail
+                const embers = [];
+
+                function animateDragon() {
+                    ctx.clearRect(0, 0, dCanvas.width, dCanvas.height);
+                    t += 0.015 * dragonSpeedMult;
+
+                    // Smooth Lissajous flight path across screen
+                    const targetX = (dCanvas.width * 0.5) + Math.cos(t) * (dCanvas.width * 0.42);
+                    const targetY = (dCanvas.height * 0.45) + Math.sin(t * 2) * (dCanvas.height * 0.32) + Math.sin(t * 3.5) * 40;
+
+                    headX += (targetX - headX) * 0.08 * dragonSpeedMult;
+                    headY += (targetY - headY) * 0.08 * dragonSpeedMult;
+
+                    segments[0].x = headX;
+                    segments[0].y = headY;
+
+                    // Inverse kinematics for serpentine body
+                    for (let i = 1; i < numSegments; i++) {
+                        const prev = segments[i - 1];
+                        const curr = segments[i];
+                        const dx = prev.x - curr.x;
+                        const dy = prev.y - curr.y;
+                        curr.angle = Math.atan2(dy, dx);
+                        curr.x = prev.x - Math.cos(curr.angle) * segLength;
+                        curr.y = prev.y - Math.sin(curr.angle) * segLength;
+                    }
+
+                    // Add fire embers from mouth/tail
+                    if (Math.random() < 0.45) {
+                        embers.push({
+                            x: headX + (Math.random() - 0.5) * 15,
+                            y: headY + (Math.random() - 0.5) * 15,
+                            vx: (Math.random() - 0.5) * 2,
+                            vy: (Math.random() - 0.5) * 2 - 1,
+                            life: 1.0,
+                            size: 2 + Math.random() * 3
+                        });
+                    }
+
+                    // Draw Dragon Body (Golden Scales + Dorsal Fin)
+                    for (let i = numSegments - 1; i >= 0; i--) {
+                        const seg = segments[i];
+                        const radius = Math.max(3, Math.sin((i / numSegments) * Math.PI) * 14);
+
+                        ctx.save();
+                        ctx.translate(seg.x, seg.y);
+                        ctx.rotate(seg.angle);
+
+                        // Body Segment
+                        const grad = ctx.createRadialGradient(0, 0, 1, 0, 0, radius);
+                        grad.addColorStop(0, '#ffd700');
+                        grad.addColorStop(0.6, '#ff7536');
+                        grad.addColorStop(1, 'rgba(255, 170, 90, 0.4)');
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Dorsal Flame Fins
+                        if (i % 2 === 0 && i < numSegments - 2) {
+                            ctx.fillStyle = '#ffaa5a';
+                            ctx.beginPath();
+                            ctx.moveTo(-radius * 0.5, -radius);
+                            ctx.lineTo(0, -radius * 1.8);
+                            ctx.lineTo(radius * 0.5, -radius);
+                            ctx.fill();
+                        }
+
+                        // Dragon Claws at segments 5 and 14
+                        if (i === 5 || i === 14) {
+                            ctx.strokeStyle = '#ffd700';
+                            ctx.lineWidth = 2.5;
+                            ctx.beginPath();
+                            ctx.moveTo(0, radius);
+                            ctx.lineTo(radius * 1.5, radius * 2);
+                            ctx.moveTo(0, -radius);
+                            ctx.lineTo(radius * 1.5, -radius * 2);
+                            ctx.stroke();
+                        }
+
+                        ctx.restore();
+                    }
+
+                    // Draw Dragon Head & Glowing Whiskers
+                    ctx.save();
+                    ctx.translate(segments[0].x, segments[0].y);
+                    ctx.rotate(segments[0].angle);
+
+                    // Head base
+                    ctx.fillStyle = '#ffd700';
+                    ctx.beginPath();
+                    ctx.ellipse(6, 0, 15, 10, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Glowing Amber Dragon Eyes
+                    ctx.fillStyle = '#00ff88';
+                    ctx.shadowColor = '#00ff88';
+                    ctx.shadowBlur = 8;
+                    ctx.beginPath();
+                    ctx.arc(8, -5, 2.5, 0, Math.PI * 2);
+                    ctx.arc(8, 5, 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    // Whiskers (undulating)
+                    ctx.strokeStyle = '#ffaa5a';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(14, -4);
+                    ctx.quadraticCurveTo(28, -15 + Math.sin(t * 8) * 8, 38, -6);
+                    ctx.moveTo(14, 4);
+                    ctx.quadraticCurveTo(28, 15 + Math.cos(t * 8) * 8, 38, 6);
+                    ctx.stroke();
+
+                    // Golden Antlers
+                    ctx.strokeStyle = '#ff7536';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(-4, -8);
+                    ctx.lineTo(-12, -18);
+                    ctx.lineTo(-8, -22);
+                    ctx.moveTo(-4, 8);
+                    ctx.lineTo(-12, 18);
+                    ctx.lineTo(-8, 22);
+                    ctx.stroke();
+
+                    ctx.restore();
+
+                    // Render Fire Embers
+                    for (let j = embers.length - 1; j >= 0; j--) {
+                        const emb = embers[j];
+                        emb.x += emb.vx;
+                        emb.y += emb.vy;
+                        emb.life -= 0.02;
+                        if (emb.life <= 0) {
+                            embers.splice(j, 1);
+                            continue;
+                        }
+                        ctx.fillStyle = `rgba(255, ${Math.floor(140 * emb.life + 100)}, 50, ${emb.life})`;
+                        ctx.beginPath();
+                        ctx.arc(emb.x, emb.y, emb.size * emb.life, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    requestAnimationFrame(animateDragon);
+                }
+                animateDragon();
+            }
+        } catch(e) {
+            console.warn('Dragon animation fallback:', e);
         }
-        if (introSkip) {
-            introSkip.addEventListener('click', (e) => {
-                e.stopPropagation();
-                clearTimeout(introTimer);
-                finishIntro();
+
+        // ================= 5. Tab Switcher =================
+        function switchTab(e, tabId) {
+            try {
+                const parent = e.target.closest('.tab-box');
+                parent.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                e.target.classList.add('active');
+                const target = parent.querySelector('#' + tabId);
+                if (target) target.classList.add('active');
+            } catch(e) {}
+        }
+
+        // ================= 6. Live Radar Canvas =================
+        try {
+            const radarCanvas = document.getElementById('radarCanvas');
+            if (radarCanvas) {
+                const ctx = radarCanvas.getContext('2d');
+                let angle = 0, sweepDir = 1;
+
+                function drawRadar() {
+                    ctx.fillStyle = 'rgba(4, 8, 5, 0.2)';
+                    ctx.fillRect(0, 0, 115, 115);
+                    const cx = 57.5, cy = 57.5, r = 50;
+
+                    ctx.strokeStyle = 'rgba(0, 255, 136, 0.3)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                    ctx.arc(cx, cy, r * 0.6, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    const rad = angle * (Math.PI / 180);
+                    ctx.strokeStyle = '#00ff88';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.lineTo(cx + Math.cos(rad) * r, cy + Math.sin(rad) * r);
+                    ctx.stroke();
+
+                    if (Math.abs(angle - 130) < 20) {
+                        ctx.fillStyle = '#ffaa5a';
+                        ctx.beginPath();
+                        ctx.arc(cx + 22, cy - 18, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    angle += 2.5 * sweepDir;
+                    if (angle >= 180) sweepDir = -1;
+                    if (angle <= 0) sweepDir = 1;
+
+                    const angleEl = document.getElementById('radar-angle');
+                    const distEl = document.getElementById('radar-dist');
+                    if (angleEl) angleEl.textContent = String(Math.floor(angle)).padStart(3, '0') + '°';
+                    if (distEl) distEl.textContent = (20 + (Math.sin(angle * 0.05) * 10)).toFixed(1) + ' cm';
+
+                    requestAnimationFrame(drawRadar);
+                }
+                drawRadar();
+            }
+        } catch(e) {}
+
+        // ================= 7. Three.js 3D Engine =================
+        let coreGroup, shapes = [], currentShapeIdx = 0, isWireframe = false, particles, amberLight;
+        try {
+            if (typeof THREE !== 'undefined') {
+                const canvas = document.getElementById('webgl-bg');
+                const scene = new THREE.Scene();
+                scene.fog = new THREE.FogExp2(0x060302, 0.038);
+
+                const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.set(0, 0, 10);
+
+                const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+                const ambientLight = new THREE.AmbientLight(0xffeedd, 0.7);
+                scene.add(ambientLight);
+
+                amberLight = new THREE.PointLight(0xffaa5a, 5, 35);
+                amberLight.position.set(0, 3, 5);
+                scene.add(amberLight);
+
+                coreGroup = new THREE.Group();
+                scene.add(coreGroup);
+
+                function updateCorePosition() {
+                    if (window.innerWidth < 768) {
+                        coreGroup.position.set(0, 1.2, 0);
+                        coreGroup.scale.set(0.75, 0.75, 0.75);
+                    } else {
+                        coreGroup.position.set(2.2, 0, 0);
+                        coreGroup.scale.set(1, 1, 1);
+                    }
+                }
+                updateCorePosition();
+
+                const solidMat = new THREE.MeshStandardMaterial({
+                    color: 0xffaa5a,
+                    emissive: 0xff7536,
+                    emissiveIntensity: 0.35,
+                    metalness: 0.9,
+                    roughness: 0.15
+                });
+
+                const geo1 = new THREE.TorusGeometry(3.0, 0.05, 16, 80);
+                const geo2 = new THREE.TorusKnotGeometry(1.6, 0.35, 100, 16);
+                const geo3 = new THREE.IcosahedronGeometry(2.0, 2);
+
+                const mesh1 = new THREE.Mesh(geo1, solidMat);
+                const mesh2 = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.04, 16, 60), solidMat);
+                mesh2.rotation.y = Math.PI / 4;
+                const group1 = new THREE.Group();
+                group1.add(mesh1);
+                group1.add(mesh2);
+
+                const meshKnot = new THREE.Mesh(geo2, solidMat);
+                const meshIco = new THREE.Mesh(geo3, solidMat);
+
+                shapes = [group1, meshKnot, meshIco];
+                coreGroup.add(shapes[0]);
+
+                const pCount = window.innerWidth < 768 ? 250 : 500;
+                const pGeo = new THREE.BufferGeometry();
+                const pPos = new Float32Array(pCount * 3);
+                for (let i = 0; i < pCount * 3; i += 3) {
+                    pPos[i] = (Math.random() - 0.5) * 35;
+                    pPos[i + 1] = (Math.random() - 0.5) * 35;
+                    pPos[i + 2] = (Math.random() - 0.5) * 25;
+                }
+                pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+                const pMat = new THREE.PointsMaterial({
+                    color: 0xffaa5a,
+                    size: 0.08,
+                    transparent: true,
+                    opacity: 0.75,
+                    blending: THREE.AdditiveBlending
+                });
+                particles = new THREE.Points(pGeo, pMat);
+                scene.add(particles);
+
+                let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
+                let isDragging = false, prevX = 0, prevY = 0, manualRotX = 0, manualRotY = 0;
+
+                function onPointerDown(x, y) { isDragging = true; prevX = x; prevY = y; }
+                function onPointerMove(x, y) {
+                    mouseX = (x / window.innerWidth - 0.5) * 2;
+                    mouseY = -(y / window.innerHeight - 0.5) * 2;
+                    if (isDragging) {
+                        manualRotY += (x - prevX) * 0.006;
+                        manualRotX += (y - prevY) * 0.006;
+                        prevX = x; prevY = y;
+                    }
+                }
+                function onPointerUp() { isDragging = false; }
+
+                window.addEventListener('mousedown', (e) => onPointerDown(e.clientX, e.clientY));
+                window.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY));
+                window.addEventListener('mouseup', onPointerUp);
+
+                window.addEventListener('touchstart', (e) => {
+                    if (e.touches.length > 0) onPointerDown(e.touches[0].clientX, e.touches[0].clientY);
+                }, { passive: true });
+                window.addEventListener('touchmove', (e) => {
+                    if (e.touches.length > 0) onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+                }, { passive: true });
+                window.addEventListener('touchend', onPointerUp);
+
+                window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    updateCorePosition();
+                });
+
+                window.morphCoreShape = function() {
+                    try {
+                        coreGroup.remove(shapes[currentShapeIdx]);
+                        currentShapeIdx = (currentShapeIdx + 1) % shapes.length;
+                        coreGroup.add(shapes[currentShapeIdx]);
+                    } catch(e) {}
+                };
+
+                window.toggle3DWireframe = function() {
+                    try {
+                        isWireframe = !isWireframe;
+                        solidMat.wireframe = isWireframe;
+                        const btn = document.getElementById('wfBtn');
+                        if (btn) {
+                            btn.style.background = isWireframe ? 'var(--amber)' : 'rgba(255, 170, 90, 0.12)';
+                            btn.style.color = isWireframe ? '#000' : 'var(--amber)';
+                        }
+                    } catch(e) {}
+                };
+
+                window.triggerSparkSurge = function() {
+                    try {
+                        if (particles) particles.rotation.y += Math.PI;
+                    } catch(e) {}
+                };
+
+                const clock = new THREE.Clock();
+                function animate3D() {
+                    requestAnimationFrame(animate3D);
+                    const time = clock.getElapsedTime();
+
+                    targetX += (mouseX - targetX) * 0.05;
+                    targetY += (mouseY - targetY) * 0.05;
+
+                    coreGroup.rotation.y = time * 0.2 + manualRotY;
+                    coreGroup.rotation.x = Math.sin(time * 0.2) * 0.2 + manualRotX;
+                    particles.rotation.y = time * 0.02;
+
+                    camera.position.x = targetX * 0.5;
+                    camera.position.y = targetY * 0.5;
+                    camera.lookAt(0, 0, 0);
+
+                    renderer.render(scene, camera);
+                }
+                animate3D();
+            }
+        } catch(e) {}
+
+        // ================= 8. 3D Card Tilt =================
+        try {
+            document.querySelectorAll('.tilt-card').forEach(card => {
+                function handleTilt(x, y) {
+                    const rect = card.getBoundingClientRect();
+                    const cardX = x - rect.left;
+                    const cardY = y - rect.top;
+                    const rotateX = ((cardY - rect.height / 2) / (rect.height / 2)) * -10;
+                    const rotateY = ((cardX - rect.width / 2) / (rect.width / 2)) * 10;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    card.style.setProperty('--mouse-x', `${(cardX / rect.width) * 100}%`);
+                    card.style.setProperty('--mouse-y', `${(cardY / rect.height) * 100}%`);
+                }
+                card.addEventListener('mousemove', (e) => handleTilt(e.clientX, e.clientY));
+                card.addEventListener('touchmove', (e) => {
+                    if (e.touches.length > 0) handleTilt(e.touches[0].clientX, e.touches[0].clientY);
+                }, { passive: true });
+                card.addEventListener('mouseleave', () => { card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)'; });
+                card.addEventListener('touchend', () => { card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)'; });
             });
-        }
+        } catch(e) {}
     </script>
 </body>
 </html>
