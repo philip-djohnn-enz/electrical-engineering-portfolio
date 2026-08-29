@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>CHORN Philip — IoT & Automation Engineer</title>
+    <title>CHORN Philip — 3D IoT & Automation Engineer</title>
 
     <link rel="icon" type="image/png" href="ph logo.png">
 
@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Koulen&display=swap" rel="stylesheet">
 
-    <!-- Three.js (Optional 3D Engine) -->
+    <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
@@ -66,7 +66,7 @@
             display: block;
         }
 
-        /* Flying Dragon Canvas Overlay */
+        /* Cinematic Dragon Canvas */
         #dragon-canvas {
             position: fixed;
             top: 0;
@@ -78,7 +78,7 @@
             display: block;
         }
 
-        /* Ambient Cyber Grid Overlay */
+        /* Cyber Grid Background */
         body::before {
             content: "";
             position: fixed;
@@ -229,7 +229,7 @@
             font-size: 0.75rem;
             font-family: 'JetBrains Mono', monospace;
             box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-            margin-right: 320px; /* Space for bubble nav on desktop */
+            margin-right: 320px;
         }
 
         @media (max-width: 900px) {
@@ -674,7 +674,7 @@
             margin-top: 1rem;
         }
 
-        /* ================= BULLETPROOF INTRO (Chinese Dragon Loading) ================= */
+        /* ================= BULLETPROOF INTRO ================= */
         #intro {
             position: fixed;
             inset: 0;
@@ -709,7 +709,6 @@
 
         .intro-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-        /* Animated Chinese Dragon Flying in Intro */
         .intro-dragon-path {
             position: absolute;
             inset: -20%;
@@ -781,13 +780,13 @@
 </head>
 <body>
 
-    <!-- 3D Three.js WebGL Interactive Background -->
+    <!-- 3D Three.js WebGL Background -->
     <canvas id="webgl-bg"></canvas>
 
-    <!-- Flying Chinese Dragon Interactive Canvas Layer -->
+    <!-- Cinematic Dragon Rendering Canvas -->
     <canvas id="dragon-canvas"></canvas>
 
-    <!-- Floating Bubble Category Navigation Menu -->
+    <!-- Floating Bubble Category Navigation -->
     <nav class="floating-bubble-nav" id="bubbleNav">
         <a href="#header-section" class="bubble-item active">🏠 Home</a>
         <a href="#skills-section" class="bubble-item">⚡ Skills</a>
@@ -801,15 +800,14 @@
         <button class="ctrl-btn" onclick="triggerSparkSurge()">⚡ Spark Burst</button>
         <button class="ctrl-btn" onclick="morphCoreShape()">🔷 Morph 3D Core</button>
         <button class="ctrl-btn" id="wfBtn" onclick="toggle3DWireframe()">🌐 Wireframe</button>
-        <button class="ctrl-btn" onclick="boostDragonSpeed()">🐉 Dragon Rush</button>
+        <button class="ctrl-btn" onclick="boostDragonSpeed()">🐉 Dragon Roar</button>
     </div>
 
-    <!-- Intro Reveal Screen with Flying Chinese Dragon -->
+    <!-- Intro Reveal Screen with Dragon -->
     <div id="intro" role="presentation" aria-hidden="true" onclick="dismissIntro()" ontouchstart="dismissIntro()">
         <button class="intro-skip" id="introSkip" type="button" onclick="dismissIntro()">SKIP &gt;&gt;</button>
 
         <div class="intro-stage">
-            <!-- Flying Golden Chinese Dragon SVG Silhouette circling the logo -->
             <svg class="intro-dragon-path" viewBox="0 0 500 500">
                 <defs>
                     <linearGradient id="dragonGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -818,15 +816,11 @@
                         <stop offset="100%" stop-color="#ffaa5a"/>
                     </linearGradient>
                 </defs>
-                <!-- Serpentine Coiled Dragon Body -->
                 <path d="M 250,40 C 390,40 460,160 440,280 C 420,380 320,460 210,440 C 100,420 40,320 60,200 C 80,90 180,60 250,110 C 310,150 340,240 310,310 C 280,360 210,360 170,320 C 140,280 160,220 210,200 C 260,190 280,240 250,260" 
                       fill="none" stroke="url(#dragonGoldGrad)" stroke-width="5" stroke-linecap="round" stroke-dasharray="12 6" opacity="0.85">
                     <animateTransform attributeName="transform" type="rotate" from="0 250 250" to="360 250 250" dur="8s" repeatCount="indefinite"/>
                 </path>
-                <!-- Dragon Whiskers & Fire Orbs -->
                 <circle cx="250" cy="40" r="7" fill="#ffd700" filter="drop-shadow(0 0 10px #ffd700)"/>
-                <circle cx="440" cy="280" r="5" fill="#ff7536"/>
-                <circle cx="210" cy="440" r="6" fill="#ffaa5a"/>
             </svg>
 
             <svg viewBox="0 0 400 400">
@@ -848,7 +842,7 @@
 
         <div class="intro-text">
             <h1 style="font-size: 1.8rem;">CHORN PHILIP <span class="khmer">ចន ហ្វីលីប</span></h1>
-            <p style="color: var(--amber); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 0.4rem;">🐉 DRAGON TELEMETRY READY — [TAP ANYWHERE]</p>
+            <p style="color: var(--amber); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 0.4rem;">🐉 DRAGON TELEMETRY READY — [TAP TO ENTER]</p>
         </div>
     </div>
 
@@ -1096,7 +1090,7 @@ float distance = (duration * 0.0343) / 2.0; // cm
                             </svg>
                         </span>
                         <h3>🤖 Pookie Mini Quadruped Robot</h3>
-                        <p>Built an 8-DOF walking quadruped featuring inverse kinematics gait routines, captive Wi-Fi web-portal control, and expressive animated OLED facial status screen (In development: on-device local AI control).</p>
+                        <p>Built an 8-DOF walking quadruped featuring inverse kinematics gait routines, captive Wi-Fi web-portal control, and expressive animated OLED facial status screen.</p>
 
                         <div style="margin-top: 1.1rem;">
                             <a href="https://drive.google.com/drive/folders/1LS8MxVf53c4X_F-wFqlXthylPBTje6_q?usp=sharing" target="_blank" class="btn-action">
@@ -1190,7 +1184,7 @@ float distance = (duration * 0.0343) / 2.0; // cm
 
     <!-- Scripts -->
     <script>
-        // ================= 1. Crash-Proof UTC+7 Clock =================
+        // ================= 1. Real-Time Clock =================
         function updateClock() {
             try {
                 const now = new Date();
@@ -1216,7 +1210,7 @@ float distance = (duration * 0.0343) / 2.0; // cm
         }
         setTimeout(dismissIntro, 3200);
 
-        // ================= 3. Floating Bubble Navigation Active Tracker =================
+        // ================= 3. Bubble Nav Scroll Tracker =================
         try {
             const sections = document.querySelectorAll('header, section');
             const navLinks = document.querySelectorAll('.floating-bubble-nav a');
@@ -1239,11 +1233,14 @@ float distance = (duration * 0.0343) / 2.0; // cm
             }, { passive: true });
         } catch(e) {}
 
-        // ================= 4. Flying Chinese Dragon Real-Time Physics Engine =================
+        // ================= 4. REALISTIC CHINESE MYTHICAL DRAGON ENGINE =================
         let dragonSpeedMult = 1.0;
+        let dragonFlameBlast = 0;
+
         window.boostDragonSpeed = function() {
-            dragonSpeedMult = 2.8;
-            setTimeout(() => { dragonSpeedMult = 1.0; }, 4000);
+            dragonSpeedMult = 2.6;
+            dragonFlameBlast = 1.0;
+            setTimeout(() => { dragonSpeedMult = 1.0; }, 3800);
         };
 
         try {
@@ -1257,36 +1254,73 @@ float distance = (duration * 0.0343) / 2.0; // cm
                 window.addEventListener('resize', resizeDragonCanvas);
                 resizeDragonCanvas();
 
-                // Serpentine Dragon Kinematics (Head + Body Joints)
-                const numSegments = 22;
-                const segLength = 14;
+                // 28 Articulated Segments with Anatomical Proportions
+                const numSegments = 28;
+                const segLength = 15;
                 const segments = [];
                 let headX = window.innerWidth * 0.5;
-                let headY = window.innerHeight * 0.4;
+                let headY = window.innerHeight * 0.45;
                 let t = 0;
+
+                // Whisker physics spring chains
+                const leftWhisker = [{x: headX, y: headY}, {x: headX, y: headY}, {x: headX, y: headY}, {x: headX, y: headY}];
+                const rightWhisker = [{x: headX, y: headY}, {x: headX, y: headY}, {x: headX, y: headY}, {x: headX, y: headY}];
 
                 for (let i = 0; i < numSegments; i++) {
                     segments.push({ x: headX - i * segLength, y: headY, angle: 0 });
                 }
 
-                // Fire Embers trail
                 const embers = [];
 
-                function animateDragon() {
+                function drawDragonLeg(seg, side, phase) {
+                    ctx.save();
+                    ctx.translate(seg.x, seg.y);
+                    ctx.rotate(seg.angle + (side * Math.PI / 2) + Math.sin(phase) * 0.4);
+
+                    // Upper leg (Thigh)
+                    ctx.strokeStyle = '#c46812';
+                    ctx.fillStyle = '#ffaa5a';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.quadraticCurveTo(side * 10, 18, side * 16, 26);
+                    ctx.stroke();
+
+                    // Lower leg & 4 Eagle Talons
+                    ctx.save();
+                    ctx.translate(side * 16, 26);
+                    ctx.rotate(-side * 0.4 + Math.cos(phase) * 0.3);
+
+                    ctx.strokeStyle = '#ffd700';
+                    ctx.lineWidth = 2.5;
+
+                    // 4 Sharp Talons
+                    for (let c = -1.5; c <= 1.5; c += 1) {
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(c * 5, 12);
+                        ctx.lineTo(c * 6 + side * 2, 16);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                    ctx.restore();
+                }
+
+                function renderDragon() {
                     ctx.clearRect(0, 0, dCanvas.width, dCanvas.height);
-                    t += 0.015 * dragonSpeedMult;
+                    t += 0.012 * dragonSpeedMult;
 
-                    // Smooth Lissajous flight path across screen
-                    const targetX = (dCanvas.width * 0.5) + Math.cos(t) * (dCanvas.width * 0.42);
-                    const targetY = (dCanvas.height * 0.45) + Math.sin(t * 2) * (dCanvas.height * 0.32) + Math.sin(t * 3.5) * 40;
+                    // Smooth Celestial Flight Path
+                    const targetX = (dCanvas.width * 0.5) + Math.cos(t * 0.9) * (dCanvas.width * 0.44);
+                    const targetY = (dCanvas.height * 0.48) + Math.sin(t * 1.8) * (dCanvas.height * 0.34) + Math.sin(t * 3.2) * 50;
 
-                    headX += (targetX - headX) * 0.08 * dragonSpeedMult;
-                    headY += (targetY - headY) * 0.08 * dragonSpeedMult;
+                    headX += (targetX - headX) * 0.07 * dragonSpeedMult;
+                    headY += (targetY - headY) * 0.07 * dragonSpeedMult;
 
                     segments[0].x = headX;
                     segments[0].y = headY;
 
-                    // Inverse kinematics for serpentine body
+                    // Inverse kinematics for serpentine body spine
                     for (let i = 1; i < numSegments; i++) {
                         const prev = segments[i - 1];
                         const curr = segments[i];
@@ -1297,129 +1331,282 @@ float distance = (duration * 0.0343) / 2.0; // cm
                         curr.y = prev.y - Math.sin(curr.angle) * segLength;
                     }
 
-                    // Add fire embers from mouth/tail
-                    if (Math.random() < 0.45) {
-                        embers.push({
-                            x: headX + (Math.random() - 0.5) * 15,
-                            y: headY + (Math.random() - 0.5) * 15,
-                            vx: (Math.random() - 0.5) * 2,
-                            vy: (Math.random() - 0.5) * 2 - 1,
-                            life: 1.0,
-                            size: 2 + Math.random() * 3
-                        });
+                    // --- 1. Draw Mystic Flaming Pearl of Wisdom (龍珠) in front of head ---
+                    const pearlDistance = 75;
+                    const pearlX = headX + Math.cos(segments[0].angle) * pearlDistance + Math.sin(t * 5) * 15;
+                    const pearlY = headY + Math.sin(segments[0].angle) * pearlDistance + Math.cos(t * 5) * 15;
+
+                    // Pearl Glow & Aura
+                    const pearlGrad = ctx.createRadialGradient(pearlX, pearlY, 2, pearlX, pearlY, 22);
+                    pearlGrad.addColorStop(0, '#ffffff');
+                    pearlGrad.addColorStop(0.3, '#ffd700');
+                    pearlGrad.addColorStop(0.7, '#ff7536');
+                    pearlGrad.addColorStop(1, 'transparent');
+                    ctx.fillStyle = pearlGrad;
+                    ctx.beginPath();
+                    ctx.arc(pearlX, pearlY, 22, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Fiery Dragon Breath Beam on Roar
+                    if (dragonFlameBlast > 0) {
+                        ctx.save();
+                        ctx.strokeStyle = `rgba(255, 200, 50, ${dragonFlameBlast})`;
+                        ctx.lineWidth = 14 * dragonFlameBlast;
+                        ctx.shadowColor = '#ff7536';
+                        ctx.shadowBlur = 20;
+                        ctx.beginPath();
+                        ctx.moveTo(headX, headY);
+                        ctx.lineTo(pearlX + (Math.random() - 0.5) * 20, pearlY + (Math.random() - 0.5) * 20);
+                        ctx.stroke();
+                        ctx.restore();
+                        dragonFlameBlast = Math.max(0, dragonFlameBlast - 0.015);
                     }
 
-                    // Draw Dragon Body (Golden Scales + Dorsal Fin)
-                    for (let i = numSegments - 1; i >= 0; i--) {
+                    // --- 2. Draw 4 Muscular Dragon Legs (2 Forelegs + 2 Hindlegs) ---
+                    drawDragonLeg(segments[6], 1, t * 6);
+                    drawDragonLeg(segments[6], -1, t * 6 + Math.PI);
+                    drawDragonLeg(segments[18], 1, t * 6 + Math.PI * 0.5);
+                    drawDragonLeg(segments[18], -1, t * 6 + Math.PI * 1.5);
+
+                    // --- 3. Draw Body Segments with Layered Scales & Dorsal Flame Fin ---
+                    for (let i = numSegments - 1; i >= 1; i--) {
                         const seg = segments[i];
-                        const radius = Math.max(3, Math.sin((i / numSegments) * Math.PI) * 14);
+                        const norm = i / numSegments;
+                        const bodyWidth = Math.sin(norm * Math.PI) * 16 + 5; // Tapered serpentine curve
 
                         ctx.save();
                         ctx.translate(seg.x, seg.y);
                         ctx.rotate(seg.angle);
 
-                        // Body Segment
-                        const grad = ctx.createRadialGradient(0, 0, 1, 0, 0, radius);
-                        grad.addColorStop(0, '#ffd700');
-                        grad.addColorStop(0.6, '#ff7536');
-                        grad.addColorStop(1, 'rgba(255, 170, 90, 0.4)');
-                        ctx.fillStyle = grad;
+                        // Dorsal Flame Mane (龍鬣)
+                        const maneHeight = Math.sin(norm * Math.PI) * 18 + Math.sin(t * 8 - i * 0.5) * 6;
+                        ctx.fillStyle = '#ff7536';
                         ctx.beginPath();
-                        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+                        ctx.moveTo(-bodyWidth * 0.5, -bodyWidth * 0.7);
+                        ctx.quadraticCurveTo(0, -bodyWidth - maneHeight, bodyWidth * 0.8, -bodyWidth * 0.6);
+                        ctx.quadraticCurveTo(0, -bodyWidth * 0.3, -bodyWidth * 0.5, -bodyWidth * 0.7);
                         ctx.fill();
 
-                        // Dorsal Flame Fins
-                        if (i % 2 === 0 && i < numSegments - 2) {
-                            ctx.fillStyle = '#ffaa5a';
-                            ctx.beginPath();
-                            ctx.moveTo(-radius * 0.5, -radius);
-                            ctx.lineTo(0, -radius * 1.8);
-                            ctx.lineTo(radius * 0.5, -radius);
-                            ctx.fill();
-                        }
+                        ctx.fillStyle = '#ffd700';
+                        ctx.beginPath();
+                        ctx.moveTo(-bodyWidth * 0.3, -bodyWidth * 0.7);
+                        ctx.quadraticCurveTo(0, -bodyWidth - maneHeight * 0.6, bodyWidth * 0.5, -bodyWidth * 0.6);
+                        ctx.fill();
 
-                        // Dragon Claws at segments 5 and 14
-                        if (i === 5 || i === 14) {
-                            ctx.strokeStyle = '#ffd700';
-                            ctx.lineWidth = 2.5;
+                        // Shaded Dragon Body (Scales + Belly Scutes)
+                        const bodyGrad = ctx.createLinearGradient(0, -bodyWidth, 0, bodyWidth);
+                        bodyGrad.addColorStop(0, '#ffd700');     // Golden back ridge
+                        bodyGrad.addColorStop(0.4, '#ff9524');    // Scale body
+                        bodyGrad.addColorStop(0.75, '#c45a00');   // Deep amber scale flank
+                        bodyGrad.addColorStop(1, '#ffe0a3');      // Creamy ventral belly plates
+
+                        ctx.fillStyle = bodyGrad;
+                        ctx.strokeStyle = '#943d00';
+                        ctx.lineWidth = 1.2;
+
+                        ctx.beginPath();
+                        ctx.ellipse(0, 0, segLength * 0.9, bodyWidth, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+
+                        // Scalloped Golden Dragon Scales Texture
+                        if (i % 2 === 0) {
+                            ctx.strokeStyle = 'rgba(255, 230, 140, 0.6)';
+                            ctx.lineWidth = 1.5;
                             ctx.beginPath();
-                            ctx.moveTo(0, radius);
-                            ctx.lineTo(radius * 1.5, radius * 2);
-                            ctx.moveTo(0, -radius);
-                            ctx.lineTo(radius * 1.5, -radius * 2);
+                            ctx.arc(-2, -bodyWidth * 0.3, 5, 0, Math.PI);
+                            ctx.arc(4, 0, 5, 0, Math.PI);
                             ctx.stroke();
                         }
 
                         ctx.restore();
                     }
 
-                    // Draw Dragon Head & Glowing Whiskers
+                    // --- 4. Grand Dragon Tail Fan (龍尾) ---
+                    const tailSeg = segments[numSegments - 1];
                     ctx.save();
-                    ctx.translate(segments[0].x, segments[0].y);
-                    ctx.rotate(segments[0].angle);
+                    ctx.translate(tailSeg.x, tailSeg.y);
+                    ctx.rotate(tailSeg.angle);
 
-                    // Head base
+                    const tailWaver = Math.sin(t * 8) * 8;
+                    ctx.fillStyle = '#ff7536';
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.quadraticCurveTo(-25, -20 + tailWaver, -55, -28 + tailWaver);
+                    ctx.quadraticCurveTo(-38, 0, -60, tailWaver);
+                    ctx.quadraticCurveTo(-38, 0, -55, 28 + tailWaver);
+                    ctx.quadraticCurveTo(-25, 20 + tailWaver, 0, 0);
+                    ctx.fill();
+
                     ctx.fillStyle = '#ffd700';
                     ctx.beginPath();
-                    ctx.ellipse(6, 0, 15, 10, 0, 0, Math.PI * 2);
+                    ctx.moveTo(0, 0);
+                    ctx.quadraticCurveTo(-20, -10 + tailWaver, -42, -14 + tailWaver);
+                    ctx.quadraticCurveTo(-28, 0, -45, tailWaver);
+                    ctx.quadraticCurveTo(-28, 0, -42, 14 + tailWaver);
+                    ctx.quadraticCurveTo(-20, 10 + tailWaver, 0, 0);
                     ctx.fill();
+                    ctx.restore();
 
-                    // Glowing Amber Dragon Eyes
-                    ctx.fillStyle = '#00ff88';
-                    ctx.shadowColor = '#00ff88';
-                    ctx.shadowBlur = 8;
+                    // --- 5. Hand-Crafted Mythical Dragon Head (龍頭) ---
+                    const head = segments[0];
+                    ctx.save();
+                    ctx.translate(head.x, head.y);
+                    ctx.rotate(head.angle);
+
+                    // Dragon Head Jaw & Snout
+                    ctx.fillStyle = '#ff9524';
+                    ctx.strokeStyle = '#7a2800';
+                    ctx.lineWidth = 2;
+
+                    // Upper Snout & Brow
                     ctx.beginPath();
-                    ctx.arc(8, -5, 2.5, 0, Math.PI * 2);
-                    ctx.arc(8, 5, 2.5, 0, Math.PI * 2);
+                    ctx.moveTo(-10, -12);
+                    ctx.lineTo(12, -10);
+                    ctx.lineTo(24, -5);
+                    ctx.lineTo(26, 4);
+                    ctx.lineTo(14, 8);
+                    ctx.lineTo(-10, 10);
+                    ctx.closePath();
                     ctx.fill();
-                    ctx.shadowBlur = 0;
-
-                    // Whiskers (undulating)
-                    ctx.strokeStyle = '#ffaa5a';
-                    ctx.lineWidth = 1.5;
-                    ctx.beginPath();
-                    ctx.moveTo(14, -4);
-                    ctx.quadraticCurveTo(28, -15 + Math.sin(t * 8) * 8, 38, -6);
-                    ctx.moveTo(14, 4);
-                    ctx.quadraticCurveTo(28, 15 + Math.cos(t * 8) * 8, 38, 6);
                     ctx.stroke();
 
-                    // Golden Antlers
-                    ctx.strokeStyle = '#ff7536';
+                    // Lower Jaw & Sharp White Fangs
+                    ctx.fillStyle = '#ffd700';
+                    ctx.beginPath();
+                    ctx.moveTo(6, 4);
+                    ctx.lineTo(20, 5);
+                    ctx.lineTo(14, 10);
+                    ctx.lineTo(2, 8);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Fangs
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.moveTo(15, -4); ctx.lineTo(17, 3); ctx.lineTo(19, -4);
+                    ctx.moveTo(9, -4);  ctx.lineTo(11, 2); ctx.lineTo(13, -4);
+                    ctx.fill();
+
+                    // Branched Deer Antlers (龍角)
+                    ctx.strokeStyle = '#ffd700';
+                    ctx.lineWidth = 3.5;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    // Left antler
+                    ctx.moveTo(-5, -10);
+                    ctx.lineTo(-22, -26);
+                    ctx.lineTo(-28, -24);
+                    ctx.moveTo(-14, -18);
+                    ctx.lineTo(-10, -32);
+                    // Right antler
+                    ctx.moveTo(-2, 10);
+                    ctx.lineTo(-18, 26);
+                    ctx.lineTo(-24, 24);
+                    ctx.moveTo(-10, 18);
+                    ctx.lineTo(-6, 32);
+                    ctx.stroke();
+
+                    // Glowing Emerald Dragon Eye (龍目)
+                    ctx.fillStyle = '#00ff88';
+                    ctx.shadowColor = '#00ff88';
+                    ctx.shadowBlur = 10;
+                    ctx.beginPath();
+                    ctx.ellipse(6, -6, 4.5, 3.5, -0.2, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Fierce Slit Pupil
+                    ctx.fillStyle = '#052b14';
+                    ctx.shadowBlur = 0;
+                    ctx.beginPath();
+                    ctx.ellipse(6.5, -6, 1.2, 3, -0.2, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Flame Brows (赤眉)
+                    ctx.fillStyle = '#ff7536';
+                    ctx.beginPath();
+                    ctx.moveTo(0, -8);
+                    ctx.quadraticCurveTo(8, -16, 18, -10);
+                    ctx.quadraticCurveTo(8, -11, 0, -8);
+                    ctx.fill();
+
+                    // Beard (龍鬚) under chin
+                    ctx.strokeStyle = '#ffaa5a';
                     ctx.lineWidth = 2;
                     ctx.beginPath();
-                    ctx.moveTo(-4, -8);
-                    ctx.lineTo(-12, -18);
-                    ctx.lineTo(-8, -22);
-                    ctx.moveTo(-4, 8);
-                    ctx.lineTo(-12, 18);
-                    ctx.lineTo(-8, 22);
+                    ctx.moveTo(8, 8);
+                    ctx.quadraticCurveTo(-4, 22, -18 + Math.sin(t * 6) * 5, 28);
                     ctx.stroke();
 
                     ctx.restore();
 
-                    // Render Fire Embers
+                    // --- 6. Trailing Catfish Whiskers (龍鬚) with Verlet Physics ---
+                    function updateWhisker(whisker, attachX, attachY, side) {
+                        whisker[0].x = attachX;
+                        whisker[0].y = attachY;
+                        for (let k = 1; k < whisker.length; k++) {
+                            const prev = whisker[k - 1];
+                            const cur = whisker[k];
+                            const wdx = prev.x - cur.x;
+                            const wdy = prev.y - cur.y;
+                            const dist = Math.sqrt(wdx * wdx + wdy * wdy);
+                            const targetDist = 18;
+                            if (dist > targetDist) {
+                                cur.x = prev.x - (wdx / dist) * targetDist;
+                                cur.y = prev.y - (wdy / dist) * targetDist + Math.sin(t * 8 + k) * 2;
+                            }
+                        }
+
+                        ctx.strokeStyle = '#ffd700';
+                        ctx.lineWidth = 2.2;
+                        ctx.shadowColor = '#ff7536';
+                        ctx.shadowBlur = 6;
+                        ctx.beginPath();
+                        ctx.moveTo(whisker[0].x, whisker[0].y);
+                        ctx.bezierCurveTo(whisker[1].x, whisker[1].y, whisker[2].x, whisker[2].y, whisker[3].x, whisker[3].y);
+                        ctx.stroke();
+                        ctx.shadowBlur = 0;
+                    }
+
+                    const whiskerAttachX = headX + Math.cos(segments[0].angle) * 16;
+                    const whiskerAttachY = headY + Math.sin(segments[0].angle) * 16;
+                    updateWhisker(leftWhisker, whiskerAttachX - Math.sin(segments[0].angle) * 8, whiskerAttachY + Math.cos(segments[0].angle) * 8, 1);
+                    updateWhisker(rightWhisker, whiskerAttachX + Math.sin(segments[0].angle) * 8, whiskerAttachY - Math.cos(segments[0].angle) * 8, -1);
+
+                    // --- 7. Golden Spiritual Flame & Embers Trail (祥雲靈氣) ---
+                    if (Math.random() < 0.65) {
+                        const randomSeg = segments[Math.floor(Math.random() * (numSegments - 4))];
+                        embers.push({
+                            x: randomSeg.x + (Math.random() - 0.5) * 20,
+                            y: randomSeg.y + (Math.random() - 0.5) * 20,
+                            vx: (Math.random() - 0.5) * 1.5,
+                            vy: (Math.random() - 0.5) * 1.5 - 0.8,
+                            life: 1.0,
+                            size: 2 + Math.random() * 4.5
+                        });
+                    }
+
                     for (let j = embers.length - 1; j >= 0; j--) {
                         const emb = embers[j];
                         emb.x += emb.vx;
                         emb.y += emb.vy;
-                        emb.life -= 0.02;
+                        emb.life -= 0.025;
                         if (emb.life <= 0) {
                             embers.splice(j, 1);
                             continue;
                         }
-                        ctx.fillStyle = `rgba(255, ${Math.floor(140 * emb.life + 100)}, 50, ${emb.life})`;
+                        ctx.fillStyle = `rgba(255, ${Math.floor(180 * emb.life + 75)}, 30, ${emb.life * 0.9})`;
                         ctx.beginPath();
                         ctx.arc(emb.x, emb.y, emb.size * emb.life, 0, Math.PI * 2);
                         ctx.fill();
                     }
 
-                    requestAnimationFrame(animateDragon);
+                    requestAnimationFrame(renderDragon);
                 }
-                animateDragon();
+                renderDragon();
             }
         } catch(e) {
-            console.warn('Dragon animation fallback:', e);
+            console.warn('Dragon engine setup:', e);
         }
 
         // ================= 5. Tab Switcher =================
