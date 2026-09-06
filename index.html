@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>CHORN Philip — IoT & Automation Engineer</title>
+
+    <link rel="icon" type="image/png" href="ph logo.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Koulen&display=swap" rel="stylesheet">
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #060302;
+            --bg-panel: rgba(18, 12, 9, 0.85);
+            --bg-card: rgba(26, 17, 12, 0.82);
+            --glass-border: rgba(255, 170, 90, 0.28);
+            --text-main: #f5ebe0;
+            --text-muted: #c4aa8f;
+            --amber: #ffaa5a;
+            --amber-bright: #ffc48a;
+            --amber-deep: #ff7536;
+            --cyan-accent: #00f0ff;
+            --green-active: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 0 1rem 6rem;
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* 3D WebGL Background Canvas */
+        #webgl-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            display: block;
+        }
+
+        /* Ambient Cyber Grid */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 170, 90, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 170, 90, 0.035) 1px, transparent 1px);
+            background-size: 36px 36px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 30%, transparent 20%, rgba(6, 3, 2, 0.85) 80%, #040201 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 4;
+        }
+
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .khmer { font-family: 'Koulen', cursive, sans-serif; font-weight: normal; }
+
+        /* ================= FLOATING BUBBLE NAVIGATION ================= */
+        .floating-bubble-nav {
+            position: fixed;
+            top: 1rem;
+            right: 1.2rem;
+            z-index: 80;
+            display: flex;
+            gap: 0.4rem;
+            background: rgba(18, 11, 7, 0.88);
+            border: 1px solid var(--glass-border);
+            padding: 0.35rem 0.6rem;
+            border-radius: 50px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.65), 0 0 15px rgba(255, 140, 66, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .bubble-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: rgba(255, 170, 90, 0.08);
+            border: 1px solid rgba(255, 170, 90, 0.2);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 30px;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.25, 1);
+            white-space: nowrap;
+        }
+
+        .bubble-item:hover, .bubble-item.active {
+            background: linear-gradient(135deg, var(--amber-deep), var(--amber));
+            color: #000;
+            border-color: var(--amber-bright);
+            box-shadow: 0 0 12px rgba(255, 170, 90, 0.6);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 680px) {
+            .floating-bubble-nav {
+                top: auto;
+                bottom: 4.8rem;
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+                max-width: 95vw;
+                overflow-x: auto;
+                padding: 0.3rem 0.5rem;
+            }
+            .bubble-item { font-size: 0.72rem; padding: 0.3rem 0.6rem; }
+        }
+
+        /* ================= 3D CONTROLLER FLOATING PILL ================= */
+        .controller-pill {
+            position: fixed;
+            bottom: 1.2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(20, 13, 9, 0.92);
+            border: 1px solid var(--glass-border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.75), 0 0 20px rgba(255, 140, 66, 0.3);
+            max-width: 94vw;
+            overflow-x: auto;
+        }
+
+        .ctrl-btn {
+            background: rgba(255, 170, 90, 0.12);
+            border: 1px solid rgba(255, 170, 90, 0.3);
+            color: var(--amber);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 30px;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: all 0.2s;
+        }
+
+        .ctrl-btn:active, .ctrl-btn:hover {
+            background: var(--amber);
+            color: #000;
+        }
+
+        /* ================= TOP IOT TELEMETRY BAR ================= */
+        .iot-topbar {
+            position: sticky;
+            top: 0.8rem;
+            z-index: 50;
+            margin-bottom: 1.5rem;
+            margin-top: 0.8rem;
+            background: rgba(14, 9, 6, 0.92);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 0.6rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            margin-right: 320px;
+        }
+
+        @media (max-width: 900px) {
+            .iot-topbar { margin-right: 0; }
+        }
+
+        .iot-metrics {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .iot-node {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--amber);
+        }
+
+        .status-beacon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green-active);
+            box-shadow: 0 0 10px var(--green-active);
+            animation: pulseBeacon 1.8s infinite;
+        }
+
+        @keyframes pulseBeacon {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.5; }
+        }
+
+        /* ================= Header ================= */
+        header {
+            position: relative;
+            padding: 2.2rem 2rem;
+            background: var(--bg-panel);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            margin-bottom: 3.5rem;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            left: 5%;
+            right: 5%;
+            bottom: -1px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--amber-deep) 30%, var(--amber) 50%, var(--amber-deep) 70%, transparent);
+            box-shadow: 0 0 15px var(--amber);
+        }
+
+        .header-layout {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo-frame {
+            position: relative;
+            width: 92px;
+            height: 92px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 800px;
+        }
+
+        .brand-logo {
+            width: 100%;
+            height: auto;
+            border-radius: 14px;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 0 18px rgba(255, 140, 66, 0.7));
+            transition: transform 0.4s ease;
+        }
+
+        .brand-logo-frame:hover .brand-logo {
+            transform: rotateY(180deg) scale(1.08);
+        }
+
+        .header-main {
+            flex: 1;
+            min-width: 260px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 6vw, 3.2rem);
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 40%, var(--amber-bright) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.3rem;
+            line-height: 1.15;
+        }
+
+        .header-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .chip {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(255, 140, 66, 0.12);
+            border: 1px solid rgba(255, 140, 66, 0.3);
+            color: var(--amber);
+        }
+
+        .chip.iot {
+            background: rgba(0, 240, 255, 0.1);
+            border-color: rgba(0, 240, 255, 0.35);
+            color: var(--cyan-accent);
+        }
+
+        .bio {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 0.98rem;
+            line-height: 1.7;
+        }
+
+        .btn-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(36, 23, 16, 0.85);
+            color: var(--amber);
+            border: 1px solid var(--glass-border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+
+        .btn-action:hover, .btn-action:active {
+            background: rgba(255, 140, 66, 0.25);
+            border-color: var(--amber);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(255, 140, 66, 0.45);
+            transform: translateY(-2px);
+        }
+
+        .btn-cv {
+            background: linear-gradient(135deg, rgba(255, 117, 54, 0.45), rgba(255, 170, 90, 0.2)) !important;
+            border-color: var(--amber) !important;
+        }
+
+        /* ================= Sections ================= */
+        section {
+            position: relative;
+            margin-bottom: 3.8rem;
+            scroll-margin-top: 5rem;
+        }
+
+        h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #ffffff;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.65rem;
+            margin-bottom: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        h2 span.title-text {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h2 span.title-text::before {
+            content: "⚡";
+            color: var(--amber);
+        }
+
+        h2 span.sec-code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--amber-deep);
+        }
+
+        /* ================= 3D TILT CARDS ================= */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.3rem;
+        }
+
+        .tilt-card {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transform-style: preserve-3d;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease-out;
+            will-change: transform;
+            overflow: hidden;
+        }
+
+        .tilt-card .card-glare {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 171, 94, 0.22), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1;
+        }
+
+        .tilt-card:hover .card-glare { opacity: 1; }
+
+        .tilt-card:hover {
+            border-color: var(--amber);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(255, 140, 66, 0.3);
+        }
+
+        .tilt-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .skill-card h3, .project-card h3, .experience-card h3 {
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .skill-card p, .project-card p, .experience-card p {
+            color: var(--text-muted);
+            font-size: 0.94rem;
+            line-height: 1.65;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.8rem;
+        }
+
+        /* Floating 3D Project Badge Icons */
+        .project-icon {
+            position: absolute;
+            top: -14px;
+            right: -14px;
+            width: 68px;
+            height: 68px;
+            pointer-events: none;
+            opacity: 0.95;
+            filter: drop-shadow(0 0 14px rgba(255, 140, 66, 0.6));
+            animation: cardIconFloat 5s ease-in-out infinite;
+            z-index: 4;
+        }
+
+        .project-icon svg { display: block; width: 100%; height: 100%; }
+
+        @keyframes cardIconFloat {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50%      { transform: translateY(-10px) rotate(3deg); }
+        }
+
+        /* ================= LIVE RADAR DISPLAY ================= */
+        .radar-widget {
+            display: flex;
+            align-items: center;
+            gap: 1.3rem;
+            background: rgba(10, 7, 5, 0.92);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1.2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .radar-screen-container {
+            width: 115px;
+            height: 115px;
+            position: relative;
+            border-radius: 50%;
+            background: #040805;
+            border: 2px solid rgba(0, 255, 136, 0.4);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.25);
+            overflow: hidden;
+            flex-shrink: 0;
+            margin: 0 auto;
+        }
+
+        #radarCanvas { width: 100%; height: 100%; display: block; }
+
+        .radar-telemetry {
+            flex: 1;
+            min-width: 160px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--amber);
+        }
+
+        .radar-telemetry .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+            border-bottom: 1px dashed rgba(255, 170, 90, 0.15);
+            padding-bottom: 0.15rem;
+        }
+
+        .radar-telemetry .val { color: #ffffff; font-weight: 700; }
+
+        /* ================= TABS ================= */
+        .tab-box {
+            margin-top: 1.1rem;
+            background: rgba(10, 6, 4, 0.9);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tab-headers {
+            display: flex;
+            background: rgba(20, 13, 9, 0.95);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 0.5rem 0.9rem;
+            cursor: pointer;
+        }
+
+        .tab-btn.active { color: var(--amber); background: rgba(255, 140, 66, 0.15); }
+
+        .tab-content {
+            display: none;
+            padding: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: #d8c2aa;
+            line-height: 1.55;
+        }
+
+        .tab-content.active { display: block; }
+
+        /* ================= DRONE FUNDING ================= */
+        .funding-card {
+            border-color: rgba(255, 140, 66, 0.45);
+            background: linear-gradient(160deg, rgba(255, 140, 66, 0.14), var(--bg-card) 65%);
+        }
+
+        .funding-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-top: 1rem;
+            margin-bottom: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .funding-amount { font-size: 1.25rem; font-weight: 800; color: #ffffff; }
+        .funding-percent { color: var(--amber); font-weight: 700; font-size: 1.1rem; }
+
+        .funding-bar {
+            position: relative;
+            width: 100%;
+            height: 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+
+        .funding-bar-fill {
+            height: 100%;
+            width: 50%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--amber-deep), var(--amber), #ffe4c2);
+            box-shadow: 0 0 15px rgba(255, 140, 66, 0.8);
+        }
+
+        .funding-qr {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+            margin-top: 1.1rem;
+            padding: 0.9rem;
+            background: rgba(20, 13, 9, 0.85);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+        }
+
+        .funding-qr img {
+            width: 94px;
+            height: auto;
+            border-radius: 8px;
+            flex-shrink: 0;
+            border: 1px solid var(--glass-border);
+        }
+
+        .tech-stack {
+            display: inline-block;
+            background: rgba(255, 140, 66, 0.15);
+            color: var(--amber-bright);
+            border: 1px solid rgba(255, 140, 66, 0.25);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.25rem 0.65rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+
+        /* ================= BULLETPROOF INTRO ================= */
+        #intro {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-dark);
+            overflow: hidden;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-animation: pureCssAutoDismiss 0.6s ease 3.4s forwards;
+            animation: pureCssAutoDismiss 0.6s ease 3.4s forwards;
+        }
+
+        @-webkit-keyframes pureCssAutoDismiss {
+            0% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; pointer-events: none; }
+        }
+
+        @keyframes pureCssAutoDismiss {
+            0% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; pointer-events: none; }
+        }
+
+        .intro-stage {
+            position: relative;
+            width: min(70vw, 300px);
+            height: min(70vw, 300px);
+        }
+
+        .intro-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+        .shard {
+            fill: none;
+            stroke: url(#shardGradient);
+            stroke-width: 3;
+            opacity: 0.9;
+            filter: drop-shadow(0 0 10px rgba(255,140,66,0.6));
+        }
+
+        .intro-logo-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 58%;
+            height: auto;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 0 25px rgba(255,140,66,0.7));
+        }
+
+        .intro-text { margin-top: 1.5rem; text-align: center; padding: 0 1.5rem; }
+
+        .intro-skip {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid var(--glass-border);
+            color: var(--amber);
+            padding: 0.45rem 1rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+        }
+
+        #intro.hide {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            border-top: 1px solid var(--glass-border);
+            padding-top: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+        }
+
+        @media (max-width: 600px) {
+            .header-layout { flex-direction: column; align-items: flex-start; }
+            .funding-qr { flex-direction: column; align-items: flex-start; }
+            .project-icon { width: 48px; height: 48px; top: -10px; right: -10px; }
+            .iot-metrics { font-size: 0.7rem; gap: 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Three.js WebGL Interactive Scene -->
+    <canvas id="webgl-bg"></canvas>
+
+    <!-- Floating Bubble Category Navigation -->
+    <nav class="floating-bubble-nav" id="bubbleNav">
+        <a href="#header-section" class="bubble-item active">🏠 Home</a>
+        <a href="#skills-section" class="bubble-item">⚡ Skills</a>
+        <a href="#projects-section" class="bubble-item">🚀 Projects</a>
+        <a href="#experience-section" class="bubble-item">💼 Experience</a>
+        <a href="CHORN_PHILIP_CV.pdf" target="_blank" class="bubble-item" style="color:var(--amber-bright);">📄 CV</a>
+    </nav>
+
+    <!-- Floating 3D Controller Pill -->
+    <div class="controller-pill">
+        <button class="ctrl-btn" onclick="triggerSparkSurge()">⚡ Spark Burst</button>
+        <button class="ctrl-btn" onclick="morphCoreShape()">🔄 Switch 3D Object</button>
+        <button class="ctrl-btn" id="wfBtn" onclick="toggle3DWireframe()">🌐 Wireframe</button>
+        <button class="ctrl-btn" onclick="scatterDebris()">💫 Orbit Scatter</button>
+    </div>
+
+    <!-- Intro Reveal Screen -->
+    <div id="intro" role="presentation" aria-hidden="true" onclick="dismissIntro()" ontouchstart="dismissIntro()">
+        <button class="intro-skip" id="introSkip" type="button" onclick="dismissIntro()">SKIP &gt;&gt;</button>
+
+        <div class="intro-stage">
+            <svg viewBox="0 0 400 400">
+                <defs>
+                    <linearGradient id="shardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#ff7536"/>
+                        <stop offset="100%" stop-color="#ffaa5a"/>
+                    </linearGradient>
+                </defs>
+                <polygon class="shard s1" points="200.0,75.0 239.8,98.0 239.8,144.0 200.0,167.0 160.2,144.0 160.2,98.0"/>
+                <polygon class="shard s2" points="268.4,114.5 308.3,137.5 308.3,183.5 268.4,206.5 228.6,183.5 228.6,137.5"/>
+                <polygon class="shard s3" points="268.4,193.5 308.3,216.5 308.3,262.5 268.4,285.5 228.6,262.5 228.6,216.5"/>
+                <polygon class="shard s4" points="200.0,233.0 239.8,256.0 239.8,302.0 200.0,325.0 160.2,302.0 160.2,256.0"/>
+                <polygon class="shard s5" points="131.6,193.5 171.4,216.5 171.4,262.5 131.6,285.5 91.7,262.5 91.7,216.5"/>
+                <polygon class="shard s6" points="131.6,114.5 171.4,137.5 171.4,183.5 131.6,206.5 91.7,183.5 91.7,137.5"/>
+            </svg>
+            <img src="ph logo.png" alt="PH Logo" class="intro-logo-img">
+        </div>
+
+        <div class="intro-text">
+            <h1 style="font-size: 1.8rem;">CHORN PHILIP <span class="khmer">ចន ហ្វីលីប</span></h1>
+            <p style="color: var(--amber); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 0.4rem;">⚡ 3D ENGINEERING SCENE READY — [TAP TO ENTER]</p>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        
+        <!-- Top IoT Live Telemetry HUD Bar -->
+        <div class="iot-topbar">
+            <div class="iot-metrics">
+                <div class="iot-node">
+                    <span class="status-beacon"></span>
+                    <span>NODE: <strong>ONLINE</strong></span>
+                </div>
+                <div class="iot-node">
+                    <span>SYS: <strong>240MHz</strong></span>
+                </div>
+                <div class="iot-node">
+                    <span><span id="sys-clock">--:--:--</span></span>
+                </div>
+            </div>
+            <div style="color: var(--amber); font-size: 0.72rem;">
+                <span id="model-label">⚙️ 3D TECH ACTIVE</span>
+            </div>
+        </div>
+
+        <!-- Header Profile -->
+        <header id="header-section">
+            <div class="header-layout">
+                <div class="brand-logo-frame">
+                    <img src="ph logo.png" alt="PH logo" class="brand-logo">
+                </div>
+                <div class="header-main">
+                    <h1>CHORN PHILIP <span class="khmer">ចន ហ្វីលីប</span></h1>
+                    <div class="header-tags">
+                        <span class="chip">⚡ ELECTRICAL ENGINEERING</span>
+                        <span class="chip iot">🤖 ROBOTICS &amp; AUTOMATION</span>
+                        <span class="chip">📡 ITC / ECAM LASALLE</span>
+                    </div>
+                    <p class="bio">Dedicated engineering student in the ECAM LaSalle international program at the Institute of Technology of Cambodia (ITC) specializing in Robotics, Embedded Firmware (STM32/ESP32), Circuit PCB Design, and Smart MEP Infrastructure.</p>
+                    <div class="btn-links">
+                        <a href="CHORN_PHILIP_CV.pdf" target="_blank" class="btn-action btn-cv">📄 Download Full CV</a>
+                        <a href="mailto:Chornphilip8@gmail.com" class="btn-action">✉️ Email Me</a>
+                        <a href="https://github.com/philip-djohnn-enz" target="_blank" class="btn-action">💻 GitHub Profile</a>
+                        <a href="https://linkedin.com" target="_blank" class="btn-action">🔗 LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Technical Expertise Section -->
+        <section id="skills-section">
+            <h2>
+                <span class="title-text">Technical Expertise</span>
+                <span class="sec-code">&lt;SKILLS_MATRIX /&gt;</span>
+            </h2>
+            <div class="skills-grid">
+                <div class="tilt-card skill-card">
+                    <div class="card-glare"></div>
+                    <div class="tilt-content">
+                        <h3>Hardware &amp; Circuit Design</h3>
+                        <p>Schematic capture, PCB layout design, component selection, multimeter/oscilloscope testing, and circuit protection systems (RCCBs/MCBs).</p>
+                    </div>
+                </div>
+                <div class="tilt-card skill-card">
+                    <div class="card-glare"></div>
+                    <div class="tilt-content">
+                        <h3>Embedded &amp; IoT Automation</h3>
+                        <p>Microcontroller programming (STM32, ESP32, Arduino), sensor interfacing (I2C/SPI/UART), motor driver integrations, and PID control algorithms.</p>
+                    </div>
+                </div>
+                <div class="tilt-card skill-card">
+                    <div class="card-glare"></div>
+                    <div class="tilt-content">
+                        <h3>Engineering Software</h3>
+                        <p>KiCad, LTspice, MATLAB/Simulink, AutoCAD, LightBurn, DIAlux Evo, and Git version control.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Projects Section -->
+        <section id="projects-section">
+            <h2>
+                <span class="title-text">Featured Projects</span>
+                <span class="sec-code">&lt;ROBOTICS_&amp;_AUTOMATION /&gt;</span>
+            </h2>
+            <div class="projects-grid">
+
+                <!-- 1. Drone Build Fundraiser -->
+                <div class="tilt-card project-card funding-card">
+                    <div class="card-glare"></div>
+                    <div class="tilt-content">
+                        <span class="project-icon" aria-hidden="true">
+                            <svg viewBox="0 0 100 100">
+                                <defs>
+                                    <linearGradient id="gradDrone" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ff7536"/>
+                                        <stop offset="100%" stop-color="#ffaa5a"/>
+                                    </linearGradient>
+                                </defs>
+                                <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
+                                <rect x="40" y="46" width="20" height="10" rx="2" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
+                                <line x1="40" y1="48" x2="24" y2="34" stroke="url(#gradDrone)" stroke-width="2.5"/>
+                                <line x1="60" y1="48" x2="76" y2="34" stroke="url(#gradDrone)" stroke-width="2.5"/>
+                                <line x1="40" y1="54" x2="24" y2="68" stroke="url(#gradDrone)" stroke-width="2.5"/>
+                                <line x1="60" y1="54" x2="76" y2="68" stroke="url(#gradDrone)" stroke-width="2.5"/>
+                                <circle cx="24" cy="34" r="7" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
+                                <circle cx="76" cy="34" r="7" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
+                                <circle cx="24" cy="68" r="7" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
+                                <circle cx="76" cy="68" r="7" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
+                            </svg>
+                        </span>
+                        <h3>🚁 Autonomous Drone Build — Live Fundraiser</h3>
+                        <p>Designing and fabricating a custom aerial drone platform for flight automation, sensor telemetry, and agricultural payloads — Stage 1: Prototype validation. Stage 2: Heavy-lift agricultural platform.</p>
+
+                        <div class="funding-status">
+                            <div class="funding-amount">$248.88 <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal;">raised of $500 goal</span></div>
+                            <div class="funding-percent">50% FUNDED</div>
+                        </div>
+                        <div class="funding-bar" role="progressbar">
+                            <div class="funding-bar-fill"></div>
+                        </div>
+                        <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">$251.12 remaining to complete phase-1 flight prototype.</p>
+
+                        <div class="funding-qr">
+                            <img src="Donate qr.jpg" alt="KHQR code — Chorn Philip">
+                            <div>
+                                <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 0.2rem;">Scan to Support Drone Build</strong>
+                                <span style="font-size: 0.82rem; color: var(--text-muted);">Use any mobile banking app to scan the KHQR code directly.</span>
+                            </div>
+                        </div>
+                        <span class="tech-stack">Aerial Robotics | Telemetry | Power Distribution</span>
+                    </div>
+                </div>
+
+                <!-- 2. Ultrasonic Radar with Live Canvas Sonar -->
+                <div class="tilt-card project-card">
+                    <div class="card-glare"></div>
+                    <div class="tilt-content">
+                        <span class="project-icon" aria-hidden="true">
+                            <svg viewBox="0 0 100 100">
+                                <defs>
+                                    <linearGradient id="gradRadar" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ff7536"/>
+                                        <stop offset="100%" stop-color="#ffaa5a"/>
+                                    </linearGradient>
+                                </defs>
+                                <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradRadar)" stroke-width="2.5"/>
+                                <circle cx="50" cy="52" r="24" fill="none" stroke="url(#gradRadar)" stroke-width="1.6" opacity="0.55"/>
+                                <circle cx="50" cy="52" r="16" fill="none" stroke="url(#gradRadar)" stroke-width="1.6" opacity="0.7"/>
+                                <line x1="50" y1="52" x2="72" y2="40" stroke="url(#gradRadar)" stroke-width="2.5"/>
+                            </svg>
+                        </span>
+                        <h3>📡 Ultrasonic Radar System (Manual &amp; Auto Mode)</h3>
+                        <p>Developed a dual-mode ultrasonic sonar tracking system using Arduino and HC-SR04 sensors with 180° continuous servo sweep and manual coordinate tracking override.</p>
+
+                        <!-- Live Real-Time Interactive Radar HUD -->
+                        <div class="radar-widget">
+                            <div class="radar-screen-container">
+                                <canvas id="radarCanvas" width="115" height="115"></canvas>
+                            </div>
+                            <div class="radar-telemetry">
+                                <div class="data-row"><span>SWEEP:</span> <span class="val" style="color:var(--green-active)">ACTIVE 180°</span></div>
+                                <div class="data-row"><span>ANGLE:</span> <span class="val" id="radar-angle">094°</span></div>
+                                <div class="data-row"><span>DISTANCE:</span> <span class="val" id="radar-dist">28.4 cm</span></div>
+                                <div class="data-row"><span>BAUD:</span> <span class="val">115200</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Code / Specs Tab -->
+                        <div class="tab-box">
+                            <div class="tab-headers">
+                                <button class="tab-btn active" onclick="switchTab(event, 'radar-c')">Arduino C++</button>
+                                <button class="tab-btn" onclick="switchTab(event, 'radar-hw')">Pinout &amp; Specs</button>
+                            </div>
+                            <div class="tab-content active" id="radar-c">
+digitalWrite(TRIG_PIN, LOW); delayMicroseconds(2);<br>
+digitalWrite(TRIG_PIN, HIGH); delayMicroseconds(10);<br>
+long duration = pulseIn(ECHO_PIN, HIGH);<br>
+float distance = (duration * 0.0343) / 2.0; // cm
+                            </div>
+                            <div class="tab-content" id="radar-hw">
+• MCU: Arduino UNO<br>
+• Sensor: HC-SR04 40kHz Ultrasonic<br>
+• Servo: SG90 Micro <br>
+• Serial: Real-time telemetry feed
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 1.1rem;">
+                            <a href="https://drive.google.com/file/d/1V-l5Fa40lRGcaoH8SDsfDkRvz4n-4CN9/view?usp=sharing" target="_blank" class="btn-action">
+                                ▶ Watch Radar Demo (Google Drive)
+                            </a>
+                        </div>
+                        <span class="tech-stack">Arduino | HC-SR04 Sensor | Servo Motor | Embedded Firmware</span>
+                    </div>
+                </div>
+
+                <!-- 3. Line Follower Robot Champion -->
+                <div class="tilt-card project-card">
+                    <div class="card-glare"></div>
+                    <div class="tilt-content">
+                        <span class="project-icon" aria-hidden="true">
+                            <svg viewBox="0 0 100 100">
+                                <defs>
+                                    <linearGradient id="gradRobot" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ff7536"/>
+                                        <stop offset="100%" stop-color="#ffaa5a"/>
+                                    </linearGradient>
+                                </defs>
+                                <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradRobot)" stroke-width="2.5"/>
+                                <rect x="32" y="38" width="36" height="26" rx="6" fill="none" stroke="url(#gradRobot)" stroke-width="2.5"/>
+                                <circle cx="42" cy="50" r="3.2" fill="url(#gradRobot)"/>
+                                <circle cx="58" cy="50" r="3.2" fill="url(#gradRobot)"/>
+                            </svg>
+                        </span>
+                        <h3>🏆 Line Follower Robot (Champion - 1st Place)</h3>
+                        <p>Engineered and coded an autonomous path-tracking robot utilizing an IR sensor array with custom tuned PID feedback algorithms. Won 1st Place in the 2026 Robotics Competition.</p>
+
+                        <div style="margin-top: 1.1rem;">
+                            <a href="https://drive.google.com/drive/folders/1AfE8Use7veXtqmIMWOBtyBM0xQOPRKwj?usp=sharing" target="_blank" class="btn-action">
+                                ▶ Watch Robot Demo (Google Drive)
+                            </a>
+                        </div>
+                        <span class="tech-stack">Embedded Systems | PID Motor Tuning | Sensor Integration</span>
+                    </div>
+                </div>
+
+                <!-- 4. Pookie Quadruped -->
+                <div class="tilt-card project-card">
+                    <div class="card-glare"></div>
+                    <div class="tilt-content">
+                        <span class="project-icon" aria-hidden="true">
+                            <svg viewBox="0 0 100 100">
+                                <defs>
+                                    <linearGradient id="gradQuad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ff7536"/>
+                                        <stop offset="100%" stop-color="#ffaa5a"/>
+                                    </linearGradient>
+                                </defs>
+                                <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradQuad)" stroke-width="2.5"/>
+                                <rect x="30" y="40" width="40" height="18" rx="6" fill="none" stroke="url(#gradQuad)" stroke-width="2.5"/>
+                                <circle cx="41" cy="49" r="2.6" fill="url(#gradQuad)"/>
+                                <circle cx="59" cy="49" r="2.6" fill="url(#gradQuad)"/>
+                            </svg>
+                        </span>
+                        <h3>🤖 Pookie Mini Quadruped Robot</h3>
+                        <p>Built an 8-DOF walking quadruped featuring inverse kinematics gait routines, captive Wi-Fi web-portal control, and expressive animated OLED facial status screen.</p>
+
+                        <div style="margin-top: 1.1rem;">
+                            <a href="https://drive.google.com/drive/folders/1LS8MxVf53c4X_F-wFqlXthylPBTje6_q?usp=sharing" target="_blank" class="btn-action">
+                                ▶ Watch Robot Demo (Google Drive)
+                            </a>
+                        </div>
+                        <span class="tech-stack">Microcontrollers | Kinematics | IoT Interface</span>
+                    </div>
+                </div>
+
+                <!-- 5. RCBO Analysis -->
+                <div class="tilt-card project-card">
+                    <div class="card-glare"></div>
+                    <div class="tilt-content">
+                        <span class="project-icon" aria-hidden="true">
+                            <svg viewBox="0 0 100 100">
+                                <defs>
+                                    <linearGradient id="gradBreaker" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ff7536"/>
+                                        <stop offset="100%" stop-color="#ffaa5a"/>
+                                    </linearGradient>
+                                </defs>
+                                <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradBreaker)" stroke-width="2.5"/>
+                                <rect x="36" y="30" width="28" height="42" rx="4" fill="none" stroke="url(#gradBreaker)" stroke-width="2.5"/>
+                            </svg>
+                        </span>
+                        <h3>⚡ Residual Current Breaker with Overcurrent (RCBO) Analysis</h3>
+                        <p>Conducted academic research and technical system evaluations on differential current sensing, fault detection speeds, and electrical safety standards.</p>
+
+                        <div style="margin-top: 1.1rem;">
+                            <a href="https://www.facebook.com/share/v/1bsX4uAJKE/" target="_blank" class="btn-action">
+                                ▶ Watch Presentation Video (Facebook)
+                            </a>
+                        </div>
+                        <span class="tech-stack">Power Systems | Circuit Protection | Safety Testing</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Professional Experience Section -->
+        <section id="experience-section">
+            <h2>
+                <span class="title-text">Professional Experience</span>
+                <span class="sec-code">&lt;EXPERIENCE /&gt;</span>
+            </h2>
+
+            <div class="tilt-card experience-card" style="margin-bottom: 1.3rem;">
+                <div class="card-glare"></div>
+                <div class="tilt-content">
+                    <h3>MEP Draftsman &amp; Technical Coordinator – B&amp;MEP Engineering Construction Co., Ltd</h3>
+                    <p style="color: var(--amber); font-size: 0.82rem; font-family: 'JetBrains Mono', monospace;">August 2025 – Present</p>
+                    <p style="margin-top: 0.5rem;">
+                        • Managed MEP drafting for 5+ major commercial projects (banks and dental clinics), producing precise CAD layout plans.<br>
+                        • Performed electrical load calculations and generated Bill of Quantities (BOQ) files.<br>
+                        • Provided direct technical support and troubleshooting for active installation crews.
+                    </p>
+
+                    <div style="margin-top: 1.1rem;">
+                        <a href="https://drive.google.com/drive/folders/1Iauf2hc7H5q5cCbdn31uX2edqLvJHxO3?usp=sharing" target="_blank" class="btn-action">
+                            📁 View CAD Drawings &amp; Project Folder
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tilt-card experience-card">
+                <div class="card-glare"></div>
+                <div class="tilt-content">
+                    <h3>MEP Technician – B&amp;MEP Engineering Construction Co., Ltd</h3>
+                    <p style="color: var(--amber); font-size: 0.82rem; font-family: 'JetBrains Mono', monospace;">Hands-on Field Experience</p>
+                    <p style="margin-top: 0.5rem;">
+                        • Executed full installations and testing for HVAC, lighting, and plumbing systems.<br>
+                        • Installed specialized safety and low-voltage infrastructure, including CCTV and fire-fighting systems.
+                    </p>
+
+                    <div style="margin-top: 1.1rem;">
+                        <a href="https://drive.google.com/drive/folders/1jRVgnTwe4oBzhM4AXFsTUW9eRj5opsep?usp=sharing" target="_blank" class="btn-action">
+                            📁 View Field Work &amp; Documentation
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 CHORN Philip. Interactive 3D WebGL Portfolio.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // ================= 1. Real-Time Clock =================
+        function updateClock() {
+            try {
+                const now = new Date();
+                const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+                const cambodia = new Date(utc + (3600000 * 7));
+                const h = String(cambodia.getHours()).padStart(2, '0');
+                const m = String(cambodia.getMinutes()).padStart(2, '0');
+                const s = String(cambodia.getSeconds()).padStart(2, '0');
+                const el = document.getElementById('sys-clock');
+                if (el) el.textContent = `${h}:${m}:${s} ICT`;
+            } catch(e) {}
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // ================= 2. Guaranteed Intro Dismissal =================
+        function dismissIntro() {
+            const intro = document.getElementById('intro');
+            if (intro) {
+                intro.classList.add('hide');
+                setTimeout(() => { if (intro.parentNode) intro.parentNode.removeChild(intro); }, 400);
+            }
+        }
+        setTimeout(dismissIntro, 3200);
+
+        // ================= 3. Bubble Nav Scroll Tracker =================
+        try {
+            const sections = document.querySelectorAll('header, section');
+            const navLinks = document.querySelectorAll('.floating-bubble-nav a');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 120;
+                    if (window.scrollY >= sectionTop) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }, { passive: true });
+        } catch(e) {}
+
+        // ================= 4. RICH 3D THREE.JS TECH & ROBOTICS OBJECTS =================
+        let scene, camera, renderer, coreGroup, shapes = [], currentShapeIdx = 0, isWireframe = false;
+        let ambientDebris = [], debrisVortex = 1.0;
+        let particles, amberLight, cyanLight;
+
+        const modelNames = [
+            '💻 3D MICROCONTROLLER IC',
+            '⚙️ 3D INDUSTRIAL GEAR',
+            '🚁 3D DRONE ROTOR',
+            '📡 3D SONAR ARRAY',
+            '🔷 3D PH GYROSCOPE',
+            '🌀 3D QUANTUM CORE'
+        ];
+
+        window.scatterDebris = function() {
+            debrisVortex = 3.5;
+            setTimeout(() => { debrisVortex = 1.0; }, 3000);
+        };
+
+        try {
+            const canvas = document.getElementById('webgl-bg');
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x060302, 0.038);
+
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 0, 10);
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+            const ambientLight = new THREE.AmbientLight(0xffeedd, 0.85);
+            scene.add(ambientLight);
+
+            amberLight = new THREE.PointLight(0xffaa5a, 6, 35);
+            amberLight.position.set(4, 4, 6);
+            scene.add(amberLight);
+
+            cyanLight = new THREE.PointLight(0x00f0ff, 4, 25);
+            cyanLight.position.set(-5, -4, 4);
+            scene.add(cyanLight);
+
+            // Core Group
+            coreGroup = new THREE.Group();
+            scene.add(coreGroup);
+
+            function updateCorePosition() {
+                if (window.innerWidth < 768) {
+                    coreGroup.position.set(0, 1.2, 0);
+                    coreGroup.scale.set(0.72, 0.72, 0.72);
+                } else {
+                    coreGroup.position.set(2.2, 0, 0);
+                    coreGroup.scale.set(1, 1, 1);
+                }
+            }
+            updateCorePosition();
+
+            // Materials
+            const goldMat = new THREE.MeshStandardMaterial({
+                color: 0xffd700,
+                emissive: 0x5a2800,
+                roughness: 0.2,
+                metalness: 0.95
+            });
+
+            const chipBodyMat = new THREE.MeshStandardMaterial({
+                color: 0x181412,
+                emissive: 0x110a05,
+                roughness: 0.35,
+                metalness: 0.8
+            });
+
+            const cyanGlowMat = new THREE.MeshStandardMaterial({
+                color: 0x00f0ff,
+                emissive: 0x0088aa,
+                emissiveIntensity: 0.6,
+                roughness: 0.2,
+                metalness: 0.8
+            });
+
+            // ---------------- OBJECT 1: 3D Microcontroller IC Chip (QFP-32) ----------------
+            const chipGroup = new THREE.Group();
+            const chipBase = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.3, 2.4), chipBodyMat);
+            const chipDie = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.05, 1.4), goldMat);
+            chipDie.position.y = 0.16;
+            chipGroup.add(chipBase);
+            chipGroup.add(chipDie);
+
+            // 32 Gold IC Pins
+            const pinGeo = new THREE.BoxGeometry(0.1, 0.05, 0.45);
+            for (let side = 0; side < 4; side++) {
+                for (let p = -3; p <= 3; p++) {
+                    const pin = new THREE.Mesh(pinGeo, goldMat);
+                    const angle = (side * Math.PI) / 2;
+                    pin.position.set(Math.cos(angle) * 1.35 + (-Math.sin(angle) * p * 0.3), 0, Math.sin(angle) * 1.35 + (Math.cos(angle) * p * 0.3));
+                    pin.rotation.y = angle;
+                    chipGroup.add(pin);
+                }
+            }
+
+            // ---------------- OBJECT 2: 3D Planetary Industrial Gear ----------------
+            const gearGroup = new THREE.Group();
+            const gearHub = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 0.45, 32), goldMat);
+            const gearHole = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.5, 16), chipBodyMat);
+            gearGroup.add(gearHub);
+            gearGroup.add(gearHole);
+
+            // 12 Gear Teeth
+            const toothGeo = new THREE.BoxGeometry(0.38, 0.45, 0.5);
+            for (let i = 0; i < 12; i++) {
+                const tooth = new THREE.Mesh(toothGeo, goldMat);
+                const a = (i / 12) * Math.PI * 2;
+                tooth.position.set(Math.cos(a) * 1.55, 0, Math.sin(a) * 1.55);
+                tooth.rotation.y = -a;
+                gearGroup.add(tooth);
+            }
+
+            // ---------------- OBJECT 3: 3D Drone Rotor & Propeller ----------------
+            const droneGroup = new THREE.Group();
+            const motorHub = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.65, 0.7, 24), chipBodyMat);
+            const propShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.35, 16), goldMat);
+            propShaft.position.y = 0.45;
+            droneGroup.add(motorHub);
+            droneGroup.add(propShaft);
+
+            // 3 Carbon Aerodynamic Blades
+            for (let b = 0; b < 3; b++) {
+                const blade = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.04, 0.38), goldMat);
+                const bAngle = (b / 3) * Math.PI * 2;
+                blade.position.set(Math.cos(bAngle) * 1.0, 0.45, Math.sin(bAngle) * 1.0);
+                blade.rotation.y = -bAngle;
+                blade.rotation.z = 0.18; // Pitch angle
+                droneGroup.add(blade);
+            }
+
+            // ---------------- OBJECT 4: 3D Sonar / Radar Sensor Array ----------------
+            const sonarGroup = new THREE.Group();
+            const dishBase = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 0.4, 0.4, 32), goldMat);
+            const centerTransceiver = new THREE.Mesh(new THREE.SphereGeometry(0.45, 16, 16), cyanGlowMat);
+            centerTransceiver.position.y = 0.3;
+            sonarGroup.add(dishBase);
+            sonarGroup.add(centerTransceiver);
+
+            // Sonar Echo Rings
+            for (let r = 1; r <= 3; r++) {
+                const ring = new THREE.Mesh(new THREE.TorusGeometry(r * 0.65, 0.03, 12, 48), cyanGlowMat);
+                ring.rotation.x = Math.PI / 2;
+                ring.position.y = r * 0.15;
+                sonarGroup.add(ring);
+            }
+
+            // ---------------- OBJECT 5: 3D PH Hexagonal Gyroscope ----------------
+            const gyroGroup = new THREE.Group();
+            const ring1 = new THREE.Mesh(new THREE.TorusGeometry(2.0, 0.05, 16, 60), goldMat);
+            const ring2 = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.04, 16, 60), cyanGlowMat);
+            ring2.rotation.x = Math.PI / 3;
+            const coreSphere = new THREE.Mesh(new THREE.IcosahedronGeometry(0.7, 2), goldMat);
+            gyroGroup.add(ring1);
+            gyroGroup.add(ring2);
+            gyroGroup.add(coreSphere);
+
+            // ---------------- OBJECT 6: 3D Quantum Torus Knot ----------------
+            const knotGroup = new THREE.Group();
+            const knotMesh = new THREE.Mesh(new THREE.TorusKnotGeometry(1.4, 0.32, 100, 16), goldMat);
+            knotGroup.add(knotMesh);
+
+            shapes = [chipGroup, gearGroup, droneGroup, sonarGroup, gyroGroup, knotGroup];
+            coreGroup.add(shapes[0]);
+
+            // ---------------- Ambient Floating 3D Tech Debris ----------------
+            const debrisGeoList = [
+                new THREE.BoxGeometry(0.4, 0.4, 0.4),                // Data cube
+                new THREE.CylinderGeometry(0.2, 0.2, 0.6, 8),        // Capacitor
+                new THREE.TorusGeometry(0.3, 0.06, 8, 16),           // Mini cog
+                new THREE.OctahedronGeometry(0.35)                   // Sensor crystal
+            ];
+
+            const debrisCount = 14;
+            for (let d = 0; d < debrisCount; d++) {
+                const randomGeo = debrisGeoList[d % debrisGeoList.length];
+                const dMat = (d % 2 === 0) ? goldMat : cyanGlowMat;
+                const mesh = new THREE.Mesh(randomGeo, dMat);
+
+                const angle = (d / debrisCount) * Math.PI * 2;
+                const dist = 3.5 + Math.random() * 2.5;
+                mesh.position.set(Math.cos(angle) * dist, (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 4);
+                mesh.userData = {
+                    angle: angle,
+                    dist: dist,
+                    speed: 0.006 + Math.random() * 0.012,
+                    rotSpeedX: (Math.random() - 0.5) * 0.04,
+                    rotSpeedY: (Math.random() - 0.5) * 0.04
+                };
+                scene.add(mesh);
+                ambientDebris.push(mesh);
+            }
+
+            // Background Particle Grid
+            const pCount = window.innerWidth < 768 ? 250 : 500;
+            const pGeo = new THREE.BufferGeometry();
+            const pPos = new Float32Array(pCount * 3);
+            for (let i = 0; i < pCount * 3; i += 3) {
+                pPos[i] = (Math.random() - 0.5) * 35;
+                pPos[i + 1] = (Math.random() - 0.5) * 35;
+                pPos[i + 2] = (Math.random() - 0.5) * 25;
+            }
+            pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+            const pMat = new THREE.PointsMaterial({
+                color: 0xffaa5a,
+                size: 0.08,
+                transparent: true,
+                opacity: 0.75,
+                blending: THREE.AdditiveBlending
+            });
+            particles = new THREE.Points(pGeo, pMat);
+            scene.add(particles);
+
+            // Pointer Drag / Parallax
+            let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
+            let isDragging = false, prevX = 0, prevY = 0, manualRotX = 0, manualRotY = 0;
+
+            function onPointerDown(x, y) { isDragging = true; prevX = x; prevY = y; }
+            function onPointerMove(x, y) {
+                mouseX = (x / window.innerWidth - 0.5) * 2;
+                mouseY = -(y / window.innerHeight - 0.5) * 2;
+                if (isDragging) {
+                    manualRotY += (x - prevX) * 0.006;
+                    manualRotX += (y - prevY) * 0.006;
+                    prevX = x; prevY = y;
+                }
+            }
+            function onPointerUp() { isDragging = false; }
+
+            window.addEventListener('mousedown', (e) => onPointerDown(e.clientX, e.clientY));
+            window.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY));
+            window.addEventListener('mouseup', onPointerUp);
+
+            window.addEventListener('touchstart', (e) => {
+                if (e.touches.length > 0) onPointerDown(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: true });
+            window.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: true });
+            window.addEventListener('touchend', onPointerUp);
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                updateCorePosition();
+            });
+
+            // Switch 3D Object Function
+            window.morphCoreShape = function() {
+                try {
+                    coreGroup.remove(shapes[currentShapeIdx]);
+                    currentShapeIdx = (currentShapeIdx + 1) % shapes.length;
+                    coreGroup.add(shapes[currentShapeIdx]);
+
+                    // Animate pop scale
+                    coreGroup.scale.set(0.2, 0.2, 0.2);
+                    const targetScale = window.innerWidth < 768 ? 0.72 : 1.0;
+                    const popTimer = setInterval(() => {
+                        coreGroup.scale.x += (targetScale - coreGroup.scale.x) * 0.2;
+                        coreGroup.scale.y = coreGroup.scale.x;
+                        coreGroup.scale.z = coreGroup.scale.x;
+                        if (Math.abs(coreGroup.scale.x - targetScale) < 0.02) {
+                            coreGroup.scale.set(targetScale, targetScale, targetScale);
+                            clearInterval(popTimer);
+                        }
+                    }, 16);
+
+                    const labelEl = document.getElementById('model-label');
+                    if (labelEl) labelEl.textContent = modelNames[currentShapeIdx];
+                } catch(e) {}
+            };
+
+            // Wireframe Toggle
+            window.toggle3DWireframe = function() {
+                try {
+                    isWireframe = !isWireframe;
+                    goldMat.wireframe = isWireframe;
+                    chipBodyMat.wireframe = isWireframe;
+                    cyanGlowMat.wireframe = isWireframe;
+                    const btn = document.getElementById('wfBtn');
+                    if (btn) {
+                        btn.style.background = isWireframe ? 'var(--amber)' : 'rgba(255, 170, 90, 0.12)';
+                        btn.style.color = isWireframe ? '#000' : 'var(--amber)';
+                    }
+                } catch(e) {}
+            };
+
+            // Spark Surge
+            window.triggerSparkSurge = function() {
+                try {
+                    if (particles) particles.rotation.y += Math.PI;
+                    if (amberLight) amberLight.intensity = 18;
+                    setTimeout(() => { if (amberLight) amberLight.intensity = 6; }, 400);
+                } catch(e) {}
+            };
+
+            // 3D Animation Loop
+            const clock = new THREE.Clock();
+            function animate3D() {
+                requestAnimationFrame(animate3D);
+                const time = clock.getElapsedTime();
+
+                targetX += (mouseX - targetX) * 0.05;
+                targetY += (mouseY - targetY) * 0.05;
+
+                // Rotate Central Object
+                coreGroup.rotation.y = time * 0.25 + manualRotY;
+                coreGroup.rotation.x = Math.sin(time * 0.2) * 0.25 + manualRotX;
+                particles.rotation.y = time * 0.02;
+
+                // Animate Ambient Floating Debris
+                ambientDebris.forEach(mesh => {
+                    mesh.userData.angle += mesh.userData.speed * debrisVortex;
+                    mesh.position.x = Math.cos(mesh.userData.angle) * mesh.userData.dist;
+                    mesh.position.z = Math.sin(mesh.userData.angle) * mesh.userData.dist;
+                    mesh.rotation.x += mesh.userData.rotSpeedX;
+                    mesh.rotation.y += mesh.userData.rotSpeedY;
+                });
+
+                // Camera follow
+                camera.position.x = targetX * 0.5;
+                camera.position.y = targetY * 0.5;
+                camera.lookAt(0, 0, 0);
+
+                renderer.render(scene, camera);
+            }
+            animate3D();
+        } catch(e) {
+            console.warn('Three.js setup:', e);
+        }
+
+        // ================= 5. Tab Switcher =================
+        function switchTab(e, tabId) {
+            try {
+                const parent = e.target.closest('.tab-box');
+                parent.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                e.target.classList.add('active');
+                const target = parent.querySelector('#' + tabId);
+                if (target) target.classList.add('active');
+            } catch(e) {}
+        }
+
+        // ================= 6. Live Radar Canvas =================
+        try {
+            const radarCanvas = document.getElementById('radarCanvas');
+            if (radarCanvas) {
+                const ctx = radarCanvas.getContext('2d');
+                let angle = 0, sweepDir = 1;
+
+                function drawRadar() {
+                    ctx.fillStyle = 'rgba(4, 8, 5, 0.2)';
+                    ctx.fillRect(0, 0, 115, 115);
+                    const cx = 57.5, cy = 57.5, r = 50;
+
+                    ctx.strokeStyle = 'rgba(0, 255, 136, 0.3)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                    ctx.arc(cx, cy, r * 0.6, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    const rad = angle * (Math.PI / 180);
+                    ctx.strokeStyle = '#00ff88';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.lineTo(cx + Math.cos(rad) * r, cy + Math.sin(rad) * r);
+                    ctx.stroke();
+
+                    if (Math.abs(angle - 130) < 20) {
+                        ctx.fillStyle = '#ffaa5a';
+                        ctx.beginPath();
+                        ctx.arc(cx + 22, cy - 18, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    angle += 2.5 * sweepDir;
+                    if (angle >= 180) sweepDir = -1;
+                    if (angle <= 0) sweepDir = 1;
+
+                    const angleEl = document.getElementById('radar-angle');
+                    const distEl = document.getElementById('radar-dist');
+                    if (angleEl) angleEl.textContent = String(Math.floor(angle)).padStart(3, '0') + '°';
+                    if (distEl) distEl.textContent = (20 + (Math.sin(angle * 0.05) * 10)).toFixed(1) + ' cm';
+
+                    requestAnimationFrame(drawRadar);
+                }
+                drawRadar();
+            }
+        } catch(e) {}
+
+        // ================= 7. 3D Card Tilt =================
+        try {
+            document.querySelectorAll('.tilt-card').forEach(card => {
+                function handleTilt(x, y) {
+                    const rect = card.getBoundingClientRect();
+                    const cardX = x - rect.left;
+                    const cardY = y - rect.top;
+                    const rotateX = ((cardY - rect.height / 2) / (rect.height / 2)) * -10;
+                    const rotateY = ((cardX - rect.width / 2) / (rect.width / 2)) * 10;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    card.style.setProperty('--mouse-x', `${(cardX / rect.width) * 100}%`);
+                    card.style.setProperty('--mouse-y', `${(cardY / rect.height) * 100}%`);
+                }
+                card.addEventListener('mousemove', (e) => handleTilt(e.clientX, e.clientY));
+                card.addEventListener('touchmove', (e) => {
+                    if (e.touches.length > 0) handleTilt(e.touches[0].clientX, e.touches[0].clientY);
+                }, { passive: true });
+                card.addEventListener('mouseleave', () => { card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)'; });
+                card.addEventListener('touchend', () => { card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)'; });
+            });
+        } catch(e) {}
+    </script>
+</body>
+</html>

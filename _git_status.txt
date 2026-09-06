@@ -1,0 +1,28 @@
+ D .gitignore
+ D 5697ca5f-41cc-474c-a8a6-c9b4a1d71d9f.mp4
+ D CHORN_PHILIP_CV.pdf
+ D CHORN_PHILIP_CV_.pdf
+ D IMG_4528.MP4
+ D IMG_5924.HEIC
+ D IMG_7193.MOV
+ D KH00124506610-29-03-2025-ETRF.pdf
+ D README.md
+ D Transcript_Y1__CHORN_PHILIP.pdf
+ D Transcript_Y3S1_CHORN_PHILIP.pdf
+ D photo_2025-10-06_12-35-52.jpg
+ D photo_2025-10-13_16-49-17.jpg
+ D photo_2025-11-22_10-50-13.jpg
+ D photo_2026-01-22_19-52-03.jpg
+ D photo_2026-02-19_10-56-50.jpg
+ D photo_2026-04-26_17-09-49.jpg
+ D photo_2026-04-26_17-12-01.jpg
+ D photo_2026-06-05_14-24-41.jpg
+ D photo_2026-06-05_14-24-48.jpg
+ D photo_2026-07-28_18-09-00.jpg
+ D portfolio.css
+ D portfolio.html
+?? Code/
+?? electrical-engineering-portfolio-main/
+?? "my credit/"
+?? "pic for project/"
+?? work/
