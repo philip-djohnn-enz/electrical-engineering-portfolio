@@ -890,57 +890,6 @@
                 <span class="sec-code">&lt;ROBOTICS_&amp;_AUTOMATION /&gt;</span>
             </h2>
             <div class="projects-grid">
-
-                <!-- 1. Drone Build Fundraiser -->
-                <div class="tilt-card project-card funding-card">
-                    <div class="card-glare"></div>
-                    <div class="tilt-content">
-                        <span class="project-icon" aria-hidden="true">
-                            <svg viewBox="0 0 100 100">
-                                <defs>
-                                    <linearGradient id="gradDrone" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stop-color="#ff7536"/>
-                                        <stop offset="100%" stop-color="#ffaa5a"/>
-                                    </linearGradient>
-                                </defs>
-                                <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
-                                <rect x="40" y="46" width="20" height="10" rx="2" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
-                                <line x1="40" y1="48" x2="24" y2="34" stroke="url(#gradDrone)" stroke-width="2.5"/>
-                                <line x1="60" y1="48" x2="76" y2="34" stroke="url(#gradDrone)" stroke-width="2.5"/>
-                                <line x1="40" y1="54" x2="24" y2="68" stroke="url(#gradDrone)" stroke-width="2.5"/>
-                                <line x1="60" y1="54" x2="76" y2="68" stroke="url(#gradDrone)" stroke-width="2.5"/>
-                                <circle cx="24" cy="34" r="7" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
-                                <circle cx="76" cy="34" r="7" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
-                                <circle cx="24" cy="68" r="7" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
-                                <circle cx="76" cy="68" r="7" fill="none" stroke="url(#gradDrone)" stroke-width="2.5"/>
-                            </svg>
-                        </span>
-                        <h3>🚁 Autonomous Drone Build — Live Fundraiser</h3>
-                        <p>Designing and fabricating a custom aerial drone platform for flight automation, sensor telemetry, and agricultural payloads — Stage 1: Prototype validation. Stage 2: Heavy-lift agricultural platform.</p>
-
-                        <div class="funding-status">
-                            <div class="funding-amount">$248.88 <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal;">raised of $500 goal</span></div>
-                            <div class="funding-percent">50% FUNDED</div>
-                        </div>
-                        <div class="funding-bar" role="progressbar">
-                            <div class="funding-bar-fill"></div>
-                        </div>
-                        <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">$251.12 remaining to complete phase-1 flight prototype.</p>
-                        <div style="margin-top: 1.1rem;">
-                        <a href="https://drive.google.com/drive/folders/1SXOPA0mHIRif5qI7VDVZ5DIcDdlCe4ZN?usp=sharing" target="_blank" class="btn-action">
-                            📁 View Build Progress (Google Drive)
-                        </a>
-                          </div>
-                        <div class="funding-qr">
-                            <img src="Donate qr.jpg" alt="KHQR code — Chorn Philip">
-                            <div>
-                                <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 0.2rem;">Scan to Support Drone Build</strong>
-                                <span style="font-size: 0.82rem; color: var(--text-muted);">Use any mobile banking app to scan the KHQR code directly.</span>
-                            </div>
-                        </div>
-                        <span class="tech-stack">Aerial Robotics | Telemetry | Power Distribution</span>
-                    </div>
-                </div>
                 <!-- 1. Drone Build Fundraiser -->
                 <div class="tilt-card project-card funding-card">
                     <div class="card-glare"></div>
@@ -1034,16 +983,16 @@
                                 <button class="tab-btn" onclick="switchTab(event, 'radar-hw')">Pinout &amp; Specs</button>
                             </div>
                             <div class="tab-content active" id="radar-c">
-digitalWrite(TRIG_PIN, LOW); delayMicroseconds(2);<br>
-digitalWrite(TRIG_PIN, HIGH); delayMicroseconds(10);<br>
-long duration = pulseIn(ECHO_PIN, HIGH);<br>
-float distance = (duration * 0.0343) / 2.0; // cm
+                                digitalWrite(TRIG_PIN, LOW); delayMicroseconds(2);<br>
+                                digitalWrite(TRIG_PIN, HIGH); delayMicroseconds(10);<br>
+                                long duration = pulseIn(ECHO_PIN, HIGH);<br>
+                                float distance = (duration * 0.0343) / 2.0; // cm
                             </div>
                             <div class="tab-content" id="radar-hw">
-• MCU: Arduino UNO<br>
-• Sensor: HC-SR04 40kHz Ultrasonic<br>
-• Servo: SG90 Micro <br>
-• Serial: Real-time telemetry feed
+                                • MCU: Arduino UNO<br>
+                                • Sensor: HC-SR04 40kHz Ultrasonic<br>
+                                • Servo: SG90 Micro <br>
+                                • Serial: Real-time telemetry feed
                             </div>
                         </div>
 
