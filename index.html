@@ -1044,13 +1044,19 @@ float distance = (duration * 0.0343) / 2.0; // cm
                                     </linearGradient>
                                 </defs>
                                 <polygon points="50,6 87,27 87,73 50,94 13,73 13,27" fill="none" stroke="url(#gradQuad)" stroke-width="2.5"/>
-                                <rect x="30" y="40" width="40" height="18" rx="6" fill="none" stroke="url(#gradQuad)" stroke-width="2.5"/>
-                                <circle cx="41" cy="49" r="2.6" fill="url(#gradQuad)"/>
-                                <circle cx="59" cy="49" r="2.6" fill="url(#gradQuad)"/>
+                                <!-- Quadruped Body -->
+                                <rect x="34" y="42" width="32" height="16" rx="4" fill="none" stroke="url(#gradQuad)" stroke-width="2.5"/>
+                                <!-- Head / OLED Module -->
+                                <rect x="62" y="38" width="8" height="12" rx="2" fill="none" stroke="url(#gradQuad)" stroke-width="2"/>
+                                <!-- 4 Walking Legs -->
+                                <path d="M 38,58 L 33,68 L 28,75" fill="none" stroke="url(#gradQuad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M 44,58 L 41,66 L 38,73" fill="none" stroke="url(#gradQuad)" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
+                                <path d="M 58,58 L 63,68 L 68,75" fill="none" stroke="url(#gradQuad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M 52,58 L 55,66 L 58,73" fill="none" stroke="url(#gradQuad)" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
                             </svg>
                         </span>
-                        <h3>🤖 Pookie Mini Quadruped Robot</h3>
-                        <p>Built an 8-DOF walking quadruped featuring inverse kinematics gait routines, captive Wi-Fi web-portal control, and expressive animated OLED facial status screen.</p>
+                        <h3>🤖 Pookie Mini 4 Legs Robot</h3>
+                        <p>Built an 8-DOF walking quadruped featuring inverse kinematics gait routines, captive Wi-Fi web-portal control, expressive animated OLED facial status screen, voice command control, and interactive speech feedback.</p>
 
                         <div style="margin-top: 1.1rem;">
                             <a href="https://drive.google.com/drive/folders/1LS8MxVf53c4X_F-wFqlXthylPBTje6_q?usp=sharing" target="_blank" class="btn-action">
@@ -1060,7 +1066,7 @@ float distance = (duration * 0.0343) / 2.0; // cm
                                    ▶ Watch Quadruped Demo (Facebook)
                              </a>
                         </div>
-                        <span class="tech-stack">Microcontrollers | Kinematics | IoT Interface</span>
+                        <span class="tech-stack">Microcontrollers | Voice Recognition | Kinematics | IoT Interface</span>
                     </div>
                 </div>
 
